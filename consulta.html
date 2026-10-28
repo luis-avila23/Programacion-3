@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIVAN - Consulta Ciudadana de Vacunación</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <!-- Encabezado Público -->
+    <header class="navbar">
+        <div class="logo">
+            <img src="assets/image/SIVAN-LOGO.png" alt="logo de SIVAN" class="logo-html">
+            <h1>SIVAN <span>| Portal de Consulta Pública del Ciudadano</span></h1>
+        </div>
+        <div class="navbar-actions">
+            <a href="login.html" class="btn-logout">Acceso Institucional</a>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Formulario de Consulta Pública -->
+        <section class="card">
+            <h2>Portal de Consulta Ciudadana</h2>
+            <p class="section-desc">Ingrese su número de cédula para consultar el estatus y las dosis de su esquema de vacunación.</p>
+            <div class="form-group search-row">
+                <label for="search-document">Número de Cédula / Documento</label>
+                <div class="input-with-btn">
+                    <input type="text" id="search-document" placeholder="Ej: V-12345678" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                    <button type="button" id="btn-search-public" class="btn btn-primary" style="margin-top: 10px;">Consultar Carnet</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resultado de la Consulta (Inicia oculto hasta hacer la búsqueda) -->
+        <section class="card" id="public-result-card" style="display: none; margin-top: 20px;">
+            <h2>Historial y Estatus de Vacunación</h2>
+            <p class="section-desc">Resultados oficiales encontrados para el documento: <strong id="res-cedula"></strong></p>
+
+            <!-- Datos personales y de ubicación geográfica -->
+            <div style="background: #f8fafc; padding: 20px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+                <p style="margin-bottom: 8px;"><strong>Titular:</strong> <span id="res-nombre">Juan Pérez</span></p>
+                <p style="margin-bottom: 8px;"><strong>Estado:</strong> Guárico | <strong>Municipio:</strong> Juan Germán Roscio</p>
+                <p style="margin-bottom: 8px;"><strong>Parroquia:</strong> San Juan de los Morros</p>
+                <p style="margin-bottom: 8px;"><strong>Subregión de Salud:</strong> Distrito Sanitario N° 1 (Central)</p>
+                <p style="margin-bottom: 0;"><strong>Estatus del Esquema:</strong> <span class="badge" style="background: #fef3c7; color: #d97706; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">En Progreso / Faltan Dosis</span></p>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="vaccine-table">
+                    <thead>
+                        <tr>
+                            <th>Vacuna / Biológico</th>
+                            <th>Dosis / Esquema</th>
+                            <th>Estado</th>
+                            <th>Fecha / Detalles</th>
+                            <th>N° Lote</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Pentavalente</strong></td>
+                            <td>1ra Dosis</td>
+                            <td><span class="badge-success">Aplicado</span></td>
+                            <td>2026-05-10</td>
+                            <td>LOT-PEN-442</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pentavalente</strong></td>
+                            <td>2da Dosis</td>
+                            <td><span class="badge" style="background: #fee2e2; color: #dc2626; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">Pendiente / No Puesta</span></td>
+                            <td>- (Falta inocular)</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>COVID-19</strong></td>
+                            <td>Refuerzo</td>
+                            <td><span class="badge-success">Aplicado</span></td>
+                            <td>2026-08-15</td>
+                            <td>LOT-COV-991</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

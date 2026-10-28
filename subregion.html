@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIVAN - Subregión de Salud (Registro Municipal)</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <span class="icon">🏥</span>
+            <h1>SIVAN <span>| Subregión</span></h1>
+        </div>
+        <div class="navbar-actions">
+            <span class="user-name">Coord. Subregional</span>
+            <a href="login.html" class="btn-logout">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <form id="subregion-form">
+
+            <section class="card">
+                <h2>Registro de Vacunación</h2>
+                <p class="section-desc">Seleccione el municipio y la jornada para registrar el reporte de dosis aplicadas en su jurisdicción.</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sub-municipality">Municipio / Jurisdicción</label>
+                        <select id="sub-municipality">
+                            <option value="">Seleccione municipio...</option>
+                            <option value="Roscio">Juan Germán Roscio</option>
+                            <option value="Infante">Leonardo Infante</option>
+                            <option value="Miranda">Francisco de Miranda</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sub-vaccine">Biológico / Vacuna</label>
+                        <select id="sub-vaccine">
+                            <option value="">Seleccione vacuna...</option>
+                            <option value="Pentavalente">Pentavalente</option>
+                            <option value="Polio">Polio OPV/IPV</option>
+                            <option value="Influenza">Influenza Estacional</option>
+                            <option value="COVID-19">COVID-19</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sub-doses">Cantidad de Dosis Aplicadas</label>
+                        <input type="number" id="sub-doses" min="1" placeholder="Ej: 150">
+                    </div>
+                    <div class="form-group">
+                        <label for="sub-date">Fecha de Reporte</label>
+                        <input type="date" id="sub-date" class="table-input">
+                    </div>
+                    <div class="form-group form-group-btn">
+                        <label>&nbsp;</label>
+                        <button type="button" id="btn-save-sub" class="btn btn-action">+ Registrar Lote / Reporte</button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="vaccine-table">
+                        <thead>
+                            <tr>
+                                <th>Municipio</th>
+                                <th>Vacuna / Biológico</th>
+                                <th>Dosis Registradas</th>
+                                <th>Fecha</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subregion-report-list">
+                            <!-- Limpio -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">Limpiar Todo</button>
+                    <button type="submit" class="btn btn-primary">Enviar Reporte a Nivel Central</button>
+                </div>
+            </section>
+
+        </form>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

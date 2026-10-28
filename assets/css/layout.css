@@ -1,0 +1,57 @@
+/* --- Barra de Navegación --- */
+.navbar {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo .icon {
+    font-size: 1.8rem;
+}
+
+.logo h1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.logo h1 span {
+    font-weight: 300;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.user-badge {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+.user-badge .role {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.user-badge .user-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* --- Contenedor Principal --- */
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}

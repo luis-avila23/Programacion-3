@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIVAN - Panel Master</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <img src="assets/image/SIVAN-LOGO.png" alt="logo de SIVAN" class="logo-html">
+            <h1>SIVAN <span>| Panel Master</span></h1>
+        </div>
+        <div class="navbar-actions">
+            <span class="user-name">Administrador</span>
+            <a href="login.html" class="btn-logout">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="card">
+            <h2>Monitoreo y Auditoría Nacional</h2>
+            <p class="section-desc">Vista de control global: supervise los reportes consolidados de todas las subregiones.</p>
+
+            <div class="table-wrapper">
+                <table class="vaccine-table">
+                    <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Municipio</th>
+                            <th>Total Dosis Nacionales</th>
+                            <th>Estado del Sistema</th>
+                            <th>Acción Master</th>
+                        </tr>
+                    </thead>
+                    <tbody id="audit-list">
+                        <tr>
+                            <td><strong>Distrito Sanitario N° 1 (Guárico)</strong></td>
+                            <td>Juan Germán Roscio</td>
+                            <td>150 dosis</td>
+                            <td><span class="badge" style="background: #d4edda; color: #155724; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Consolidado / Aprobado</span></td>
+                            <td><button type="button" class="btn" style="padding: 3px 10px; font-size: 0.75rem; background: #0284c7; color: white; border: none; border-radius: 4px;">Auditar</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Gestión de Usuarios y Accesos</h2>
+            <p class="section-desc">Cree credenciales y asigne roles al personal de salud autorizado a nivel nacional.</p>
+
+            <form id="master-user-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="user-name">Nombre y Apellido</label>
+                        <input type="text" id="user-name" placeholder="Ej: Dr. Carlos Mendoza">
+                    </div>
+                    <div class="form-group">
+                        <label for="user-email">Correo Institucional</label>
+                        <input type="email" id="user-email" placeholder="carlos@salud.gob.ve">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="user-role">Rol / Perfil</label>
+                        <select id="user-role">
+                            <option value="">Seleccione rol...</option>
+                            <option value="Vacunador">Perfil 3: Vacunador (Operativo)</option>
+                            <option value="Subregion">Perfil 2: Subregión de Salud</option>
+                            <option value="Master">Perfil 1: Master (Admin)</option>
+                        </select>
+                    </div>
+                    <div class="form-group form-group-btn">
+                        <label>&nbsp;</label>
+                        <button type="button" id="btn-save-user" class="btn btn-primary">+ Registrar Nuevo Usuario</button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="vaccine-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Rol</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="master-user-list">
+                            <!-- Limpio -->
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Actualización del Catálogo Nacional de Vacunas</h2>
+            <p class="section-desc">Agregue nuevos biológicos autorizados al esquema oficial de vacunación del país.</p>
+            
+            <form id="master-catalog-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="catalog-vaccine">Nombre del Biológico</label>
+                        <input type="text" id="catalog-vaccine" placeholder="Ej: Fiebre Amarilla">
+                    </div>
+                    <div class="form-group">
+                        <label for="catalog-dose">Esquema Requerido</label>
+                        <input type="text" id="catalog-dose" placeholder="Ej: Dosis Única">
+                    </div>
+                    <div class="form-group form-group-btn">
+                        <label>&nbsp;</label>
+                        <button type="button" id="btn-save-catalog" class="btn btn-action">+ Agregar al Catálogo</button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="vaccine-table">
+                        <thead>
+                            <tr>
+                                <th>Biológico Autorizado</th>
+                                <th>Esquema</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="master-catalog-list">
+                            <!-- Limpia -->
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

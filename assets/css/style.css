@@ -1,0 +1,39 @@
+/* 1. Variables globales y reseteo */
+@import url('variables.css');
+
+/* 2. Estructura y diseño general */
+@import url('layout.css');
+
+/* 3. Componentes (tarjetas, formularios, botones) */
+@import url('components.css');
+
+/* 4. Tablas y estados */
+@import url('tables.css');
+
+/* --- Botón de Cerrar Sesión --- */
+.btn-logout {
+    background-color: #ef4444;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-logout:hover {
+    background-color: #dc2626;
+}
+
+.logo-web {
+    width: 150px; /* Ajusta el ancho a tu gusto */
+    height: auto;
+}
+
+.logo-html {
+    width: 50px; /* Ajusta el ancho a tu gusto */
+    height: auto;
+}

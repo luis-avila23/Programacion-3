@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIVAN - Expediente de Vacunación</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <!-- Encabezado / Barra Superior -->
+    <header class="navbar">
+        <div class="logo">
+            <img src="assets/image/SIVAN-LOGO.png" alt="logo de SIVAN" class="logo-html">
+            <h1>SIVAN <span>| Sistema de Información Nacional de Vacunación</span></h1>
+        </div>
+        <div class="navbar-actions">
+            <span class="user-name">Usuario</span>
+            <a href="login.html" class="btn-logout">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <form id="sivan-form">
+
+            <!-- Datos -->
+            <section class="card patient-card">
+                <h2>Datos</h2>
+                <p class="section-desc">Ingrese la cédula.</p>
+
+                <div class="form-group search-row">
+                    <label for="document">Número de Cédula / Documento</label>
+                    <div class="input-with-btn">
+                        <input type="text" id="document" placeholder="Ej: V-12345678">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstname">Nombres</label>
+                        <input type="text" id="firstname" placeholder="Nombres">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Apellidos</label>
+                        <input type="text" id="lastname" placeholder="Apellidos">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico</label>
+                        <input type="email" id="email" placeholder="ejemplo@correo.com">
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label for="age">Edad (años)</label>
+                        <input type="number" id="age" min="0" max="120" placeholder="Ej: 25">
+                    </div>
+                </div>
+
+                <h3 class="sub-title">Ubicación y Jurisdicción Sanitaria</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="state">Estado</label>
+                        <select id="state">
+                            <option value="">Seleccione Estado...</option>
+                            <option value="Guárico">Guárico</option>
+                            <option value="Carabobo">Carabobo</option>
+                            <option value="Miranda">Miranda</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="municipality">Municipio</label>
+                        <select id="municipality">
+                            <option value="">Seleccione Municipio...</option>
+                            <option value="Roscio">Juan Germán Roscio</option>
+                            <option value="Infante">Leonardo Infante</option>
+                            <option value="Miranda">Francisco de Miranda</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="parish">Parroquia</label>
+                        <select id="parish">
+                            <option value="">Seleccione Parroquia...</option>
+                            <option value="SanJuan">San Juan de los Morros</option>
+                            <option value="Parapara">Parapara</option>
+                            <option value="Cantagallo">Cantagallo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="subregion">Subregión de Salud / Área Sanitaria</label>
+                        <select id="subregion">
+                            <option value="">Seleccione Subregión...</option>
+                            <option value="Distrito 1">Distrito Sanitario N° 1 (Central)</option>
+                            <option value="Distrito 2">Distrito Sanitario N° 2 (Sur)</option>
+                            <option value="Distrito 3">Distrito Sanitario N° 3 (Oriente)</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Esquema Nacional de Vacunación (Selector Dinámico) -->
+            <section class="card record-card">
+                <h2>Esquema Nacional de Vacunación</h2>
+                <p class="section-desc">Seleccione el biológico, especifique la dosis correspondiente, ingrese la fecha, el lote y agregue el registro al expediente.</p>
+
+                <!-- Bloque 1: Registrar Vacuna Aplicada -->
+                <div class="form-row" style="background: #f8fafc; padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #e2e8f0; align-items: flex-end;">
+                    <div class="form-group" style="flex: 1.5;">
+                        <label for="select-vaccine">Vacuna / Biológico</label>
+                        <select id="select-vaccine">
+                            <option value="">Seleccione vacuna...</option>
+                            <option value="BCG (Tuberculosis)">BCG (Tuberculosis)</option>
+                            <option value="Pentavalente">Pentavalente</option>
+                            <option value="Polio OPV/IPV">Polio OPV/IPV</option>
+                            <option value="Influenza Estacional">Influenza Estacional</option>
+                            <option value="COVID-19">COVID-19</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1.2;">
+                        <label for="select-dose-num">Número de Dosis</label>
+                        <select id="select-dose-num">
+                            <option value="1ra Dosis">1ra Dosis</option>
+                            <option value="2da Dosis">2da Dosis</option>
+                            <option value="3ra Dosis">3ra Dosis</option>
+                            <option value="Refuerzo">Refuerzo</option>
+                            <option value="Dosis Única">Dosis Única</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="input-date">Fecha de Aplicación</label>
+                        <input type="date" id="input-date" class="table-input">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="input-lot">N° Lote</label>
+                        <input type="text" id="input-lot" class="table-input" placeholder="Ej: LOT-9823">
+                    </div>
+                    <div class="form-group form-group-btn" style="flex: 1;">
+                        <label>&nbsp;</label>
+                        <button type="button" id="btn-add-dose" class="btn btn-primary" style="width: 100%;">+ Agregar Dosis</button>
+                    </div>
+                </div>
+
+                <!-- Bloque 2: Registrar Vacuna Pendiente / No Puesta -->
+                <div class="form-row" style="background: #fff1f2; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #fecdd3; align-items: flex-end;">
+                    <div class="form-group" style="flex: 1.5;">
+                        <label for="select-vaccine-pending" style="color: #9b1c1c;">Vacuna Pendiente / Faltante</label>
+                        <select id="select-vaccine-pending">
+                            <option value="">Seleccione vacuna faltante...</option>
+                            <option value="BCG (Tuberculosis)">BCG (Tuberculosis)</option>
+                            <option value="Pentavalente">Pentavalente</option>
+                            <option value="Polio OPV/IPV">Polio OPV/IPV</option>
+                            <option value="Influenza Estacional">Influenza Estacional</option>
+                            <option value="COVID-19">COVID-19</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1.2;">
+                        <label for="select-dose-num-pending" style="color: #9b1c1c;">Dosis Requerida</label>
+                        <select id="select-dose-num-pending">
+                            <option value="1ra Dosis">1ra Dosis</option>
+                            <option value="2da Dosis">2da Dosis</option>
+                            <option value="3ra Dosis">3ra Dosis</option>
+                            <option value="Refuerzo">Refuerzo</option>
+                            <option value="Dosis Única">Dosis Única</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="input-date-pending">Fecha Estimada / N/A</label>
+                        <input type="date" id="input-date-pending" class="table-input">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="input-lot-pending">Observación</label>
+                        <input type="text" id="input-lot-pending" class="table-input" placeholder="Ej: Falta inocular">
+                    </div>
+                    <div class="form-group form-group-btn" style="flex: 1;">
+                        <label>&nbsp;</label>
+                        <button type="button" id="btn-add-pending" class="btn" style="width: 100%; background-color: #e11d48; color: white;">+ Añadir Pendiente</button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="vaccine-table">
+                        <thead>
+                            <tr>
+                                <th>Vacuna / Biológico y Esquema</th>
+                                <th>Estado</th>
+                                <th>Fecha de Aplicación</th>
+                                <th>Lote</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dynamic-vaccine-list">
+                            <!-- Filas dinámicas -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">Limpiar Todo</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios del Expediente</button>
+                </div>
+            </section>
+
+        </form>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

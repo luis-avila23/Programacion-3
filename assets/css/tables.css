@@ -1,0 +1,52 @@
+.table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.vaccine-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.vaccine-table th, .vaccine-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.vaccine-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+}
+
+.applied-row {
+    background-color: #fafbfc;
+}
+
+.table-input {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+/* --- Badges de Estado --- */
+.badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-applied {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.badge-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
