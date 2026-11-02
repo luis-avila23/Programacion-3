@@ -120,19 +120,15 @@
                 <p class="section-desc">Seleccione el biológico, especifique la dosis correspondiente, ingrese la fecha, el lote y agregue el registro al expediente.</p>
 
                 <!-- Bloque 1: Registrar Vacuna Aplicada -->
-                <div class="form-row" style="background: #f8fafc; padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #e2e8f0; align-items: flex-end;">
-                    <div class="form-group" style="flex: 1.5;">
+                <div class="form-row form-row-dose-block">
+                    <div class="form-group col-flex-15">
                         <label for="select-vaccine">Vacuna / Biológico</label>
                         <select id="select-vaccine">
                             <option value="">Seleccione vacuna...</option>
-                            <option value="BCG (Tuberculosis)">BCG (Tuberculosis)</option>
-                            <option value="Pentavalente">Pentavalente</option>
-                            <option value="Polio OPV/IPV">Polio OPV/IPV</option>
-                            <option value="Influenza Estacional">Influenza Estacional</option>
-                            <option value="COVID-19">COVID-19</option>
+                            <option value="Toxoide Tetánico">Toxoide Tetánico</option>
                         </select>
                     </div>
-                    <div class="form-group" style="flex: 1.2;">
+                    <div class="form-group col-flex-12">
                         <label for="select-dose-num">Número de Dosis</label>
                         <select id="select-dose-num">
                             <option value="1ra Dosis">1ra Dosis</option>
@@ -142,35 +138,30 @@
                             <option value="Dosis Única">Dosis Única</option>
                         </select>
                     </div>
-                    <div class="form-group" style="flex: 1;">
+                    <div class="form-group col-flex-1">
                         <label for="input-date">Fecha de Aplicación</label>
                         <input type="date" id="input-date" class="table-input">
                     </div>
-                    <div class="form-group" style="flex: 1;">
+                    <div class="form-group col-flex-1">
                         <label for="input-lot">N° Lote</label>
                         <input type="text" id="input-lot" class="table-input" placeholder="Ej: LOT-9823">
                     </div>
-                    <div class="form-group form-group-btn" style="flex: 1;">
+                    <div class="form-group form-group-btn col-flex-1">
                         <label>&nbsp;</label>
-                        <button type="button" id="btn-add-dose" class="btn btn-primary" style="width: 100%;">+ Agregar Dosis</button>
+                        <button type="button" id="btn-add-dose" class="btn btn-primary btn-full">+ Agregar Dosis</button>
                     </div>
                 </div>
 
-                <!-- Bloque 2: Registrar Vacuna Pendiente / No Puesta -->
-                <div class="form-row" style="background: #fff1f2; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #fecdd3; align-items: flex-end;">
-                    <div class="form-group" style="flex: 1.5;">
-                        <label for="select-vaccine-pending" style="color: #9b1c1c;">Vacuna Pendiente / Faltante</label>
+                <div class="form-row form-row-pending-block">
+                    <div class="form-group col-flex-15">
+                        <label for="select-vaccine-pending" class="label-pending">Vacuna pendiente</label>
                         <select id="select-vaccine-pending">
-                            <option value="">Seleccione vacuna faltante...</option>
-                            <option value="BCG (Tuberculosis)">BCG (Tuberculosis)</option>
-                            <option value="Pentavalente">Pentavalente</option>
-                            <option value="Polio OPV/IPV">Polio OPV/IPV</option>
-                            <option value="Influenza Estacional">Influenza Estacional</option>
-                            <option value="COVID-19">COVID-19</option>
+                            <option value="">Seleccione vacuna...</option>
+                            <option value="Toxoide Tetánico">Toxoide Tetánico</option>
                         </select>
                     </div>
-                    <div class="form-group" style="flex: 1.2;">
-                        <label for="select-dose-num-pending" style="color: #9b1c1c;">Dosis Requerida</label>
+                    <div class="form-group col-flex-12">
+                        <label for="select-dose-num-pending" class="label-pending">Dosis requerida</label>
                         <select id="select-dose-num-pending">
                             <option value="1ra Dosis">1ra Dosis</option>
                             <option value="2da Dosis">2da Dosis</option>
@@ -179,17 +170,17 @@
                             <option value="Dosis Única">Dosis Única</option>
                         </select>
                     </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label for="input-date-pending">Fecha Estimada / N/A</label>
+                    <div class="form-group col-flex-1">
+                        <label for="input-date-pending">Fecha estimada</label>
                         <input type="date" id="input-date-pending" class="table-input">
                     </div>
-                    <div class="form-group" style="flex: 1;">
+                    <div class="form-group col-flex-1">
                         <label for="input-lot-pending">Observación</label>
                         <input type="text" id="input-lot-pending" class="table-input" placeholder="Ej: Falta inocular">
                     </div>
-                    <div class="form-group form-group-btn" style="flex: 1;">
+                    <div class="form-group form-group-btn col-flex-1">
                         <label>&nbsp;</label>
-                        <button type="button" id="btn-add-pending" class="btn" style="width: 100%; background-color: #e11d48; color: white;">+ Añadir Pendiente</button>
+                        <button type="button" id="btn-add-pending" class="btn btn-pending">+ Añadir pendiente</button>
                     </div>
                 </div>
 
@@ -205,7 +196,6 @@
                             </tr>
                         </thead>
                         <tbody id="dynamic-vaccine-list">
-                            <!-- Filas dinámicas -->
                         </tbody>
                     </table>
                 </div>

@@ -1,16 +1,8 @@
-/* 1. Variables globales y reseteo */
 @import url('variables.css');
-
-/* 2. Estructura y diseño general */
 @import url('layout.css');
-
-/* 3. Componentes (tarjetas, formularios, botones) */
 @import url('components.css');
-
-/* 4. Tablas y estados */
 @import url('tables.css');
 
-/* --- Botón de Cerrar Sesión --- */
 .btn-logout {
     background-color: #ef4444;
     color: #fff;

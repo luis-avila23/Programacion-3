@@ -236,21 +236,6 @@ input[type="email"]:focus, input[type="number"]:focus {
     justify-content: center;
 }
 
-/* --- Clases adicionales limpias para SIVAN --- */
-.btn-logout {
-    background-color: #ef4444;
-    color: #fff;
-    padding: 6px 12px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: background-color 0.2s;
-}
-.btn-logout:hover {
-    background-color: #dc2626;
-}
-
 .btn-delete {
     background-color: #ef4444;
     color: white;
@@ -306,4 +291,152 @@ input[type="email"]:focus, input[type="number"]:focus {
 .login-footer-link a:hover {
     opacity: 0.8;
     text-decoration: underline;
+}
+
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f1f5f9;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 35px;
+}
+
+.login-card-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-card-header h2 {
+    margin-top: 10px;
+    color: #1e293b;
+}
+
+.login-hints {
+    margin-top: 20px;
+    font-size: 0.8rem;
+    color: #64748b;
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.login-hints p {
+    margin: 0 0 5px 0;
+    font-weight: bold;
+}
+
+.login-hints ul {
+    margin: 0;
+    padding-left: 15px;
+}
+
+.is-hidden {
+    display: none;
+}
+
+.consult-result-card {
+    margin-top: 20px;
+}
+
+.consult-summary {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.consult-summary p {
+    margin: 0 0 8px 0;
+}
+
+.consult-summary p:last-child {
+    margin-bottom: 0;
+}
+
+.form-row-dose-block {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    align-items: flex-end;
+}
+
+.form-row-pending-block {
+    background: #fff5f5;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #f5c6cb;
+    align-items: flex-end;
+}
+
+.col-flex-15 {
+    flex: 1.5;
+}
+
+.col-flex-12 {
+    flex: 1.2;
+}
+
+.col-flex-1 {
+    flex: 1;
+}
+
+.label-pending {
+    color: #842029;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.btn-pending {
+    width: 100%;
+    background-color: #c82333;
+    color: #fff;
+}
+
+.btn-pending:hover {
+    background-color: #a71d2a;
+}
+
+.badge-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-ok {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.btn-audit {
+    padding: 3px 10px;
+    font-size: 0.75rem;
 }
