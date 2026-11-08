@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIVAN - Subregión de Salud (Registro Municipal)</title>
+    <title>SIVAN - Subregión de Salud (Emisión de Carnet)</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -23,63 +23,103 @@
 
         <form id="subregion-form">
 
+            <!-- Sección Única: Emisión y Validación de Carnet de Salud -->
             <section class="card">
-                <h2>Registro de Vacunación</h2>
-                <p class="section-desc">Seleccione el municipio y la jornada para registrar el reporte de dosis aplicadas en su jurisdicción.</p>
+                <h2>Emisión de Carnet de Salud</h2>
+                <p class="section-desc">Valide los datos del ciudadano provenientes del registro público (index) y complete la información médica para emitir el carnet de salud.</p>
+
+                <!-- Identificación Principal y Municipio -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="citizen-cedula">Cédula de Identidad</label>
+                        <input type="text" id="citizen-cedula" placeholder="Ej: V-12345678">
+                    </div>
+                    <div class="form-group">
+                        <label for="citizen-first-name">Primer Nombre</label>
+                        <input type="text" id="citizen-first-name" placeholder="Primer nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="citizen-second-name">Segundo Nombre</label>
+                        <input type="text" id="citizen-second-name" placeholder="Segundo nombre">
+                    </div>
+                </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="sub-municipality">Municipio / Jurisdicción</label>
-                        <select id="sub-municipality">
+                        <label for="citizen-first-lastname">Primer Apellido</label>
+                        <input type="text" id="citizen-first-lastname" placeholder="Primer apellido">
+                    </div>
+                    <div class="form-group">
+                        <label for="citizen-second-lastname">Segundo Apellido</label>
+                        <input type="text" id="citizen-second-lastname" placeholder="Segundo apellido">
+                    </div>
+                    <div class="form-group">
+                        <label for="citizen-municipality">Municipio de Residencia</label>
+                        <select id="citizen-municipality">
                             <option value="">Seleccione municipio...</option>
                             <option value="Roscio">Juan Germán Roscio</option>
                             <option value="Infante">Leonardo Infante</option>
                             <option value="Miranda">Francisco de Miranda</option>
                         </select>
                     </div>
+                </div>
+
+                <!-- Datos Médicos y de Emisión -->
+                <div class="form-row">
                     <div class="form-group">
-                        <label for="sub-vaccine">Biológico / Vacuna</label>
-                        <select id="sub-vaccine">
-                            <option value="">Seleccione vacuna...</option>
-                            <option value="Toxoide Tetánico">Toxoide Tetánico</option>
+                        <label for="health-blood-type">Tipo de Sangre / Factor RH</label>
+                        <select id="health-blood-type">
+                            <option value="">Seleccione...</option>
+                            <option value="O+">O Positivo (O+)</option>
+                            <option value="O-">O Negativo (O-)</option>
+                            <option value="A+">A Positivo (A+)</option>
+                            <option value="A-">A Negativo (A-)</option>
+                            <option value="B+">B Positivo (B+)</option>
+                            <option value="B-">B Negativo (B-)</option>
+                            <option value="AB+">AB Positivo (AB+)</option>
+                            <option value="AB-">AB Negativo (AB-)</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="health-condition">Condición / Apto Sanitario</label>
+                        <select id="health-condition">
+                            <option value="">Seleccione condición...</option>
+                            <option value="Apto Manipulación de Alimentos">Apto para Manipulación de Alimentos</option>
+                            <option value="Apto Laboral">Apto Laboral</option>
+                            <option value="Control General">Control General de Salud</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="health-expiry">Fecha de Vencimiento del Carnet</label>
+                        <input type="date" id="health-expiry" class="table-input">
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="sub-doses">Cantidad de Dosis Aplicadas</label>
-                        <input type="number" id="sub-doses" min="1" placeholder="Ej: 150">
-                    </div>
-                    <div class="form-group">
-                        <label for="sub-date">Fecha de Reporte</label>
-                        <input type="date" id="sub-date" class="table-input">
-                    </div>
-                    <div class="form-group form-group-btn">
-                        <label>&nbsp;</label>
-                        <button type="button" id="btn-save-sub" class="btn btn-action">+ Registrar Lote / Reporte</button>
-                    </div>
+                <div class="form-actions-inline" style="margin-bottom: 20px;">
+                    <button type="button" id="btn-save-health-card" class="btn btn-action">+ Registrar / Generar Carnet</button>
                 </div>
 
                 <div class="table-wrapper">
                     <table class="vaccine-table">
                         <thead>
                             <tr>
-                                <th>Municipio</th>
-                                <th>Vacuna / Biológico</th>
-                                <th>Dosis Registradas</th>
-                                <th>Fecha</th>
+                                <th>Cédula</th>
+                                <th>Ciudadano</th>
+                                <th>Tipo Sangre</th>
+                                <th>Apto Sanitario</th>
+                                <th>Vencimiento</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
-                        <tbody id="subregion-report-list">
+                        <tbody id="health-card-list">
+                            <!-- Aquí se cargarán dinámicamente los carnets procesados -->
                         </tbody>
                     </table>
                 </div>
 
-                <div class="form-actions">
+                <div class="form-actions" style="margin-top: 25px;">
                     <button type="reset" class="btn btn-secondary">Limpiar Todo</button>
-                    <button type="submit" class="btn btn-primary">Enviar Reporte a Nivel Central</button>
+                    <button type="submit" class="btn btn-primary">Enviar Registros a Nivel Central</button>
                 </div>
             </section>
 
