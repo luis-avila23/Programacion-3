@@ -1,20 +1,38 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Base de datos simulada en memoria sincronizada con la Subregión y Consulta
     const consultasPublicas = {
         '12345678': {
-            nombre: 'Juan Carlos Pérez Gómez',
+            firstname1: 'Juan',
+            firstname2: 'Carlos',
+            lastname1: 'Pérez',
+            lastname2: 'Gómez',
+            municipality: 'Roscio',
+            bloodType: 'O+',
+            condition: 'Apto para Manipulación de Alimentos',
+            expiry: '2027-11-15',
             centro: 'Aurora',
             vacunas: [
                 { nombre: 'Toxoide Tetánico', dosis: 'Primera Dosis', estado: 'Aplicado' }
             ]
         },
         '87654321': {
-            nombre: 'María Alejandra Rodríguez Blanco',
+            firstname1: 'María',
+            firstname2: 'Alejandra',
+            lastname1: 'Rodríguez',
+            lastname2: 'Blanco',
+            municipality: 'Infante',
+            bloodType: 'A+',
+            condition: 'Apto Laboral',
+            expiry: '2027-06-30',
             centro: 'Aurora',
             vacunas: []
         }
     };
 
+    // ==========================================
+    // 1. AUTENTICACIÓN
+    // ==========================================
     const loginBtn = document.getElementById('btn-login');
     if (loginBtn) {
         loginBtn.addEventListener('click', () => {
@@ -38,6 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ==========================================
+    // 2. PANEL MASTER: GESTIÓN DE USUARIOS
+    // ==========================================
     const saveUserBtn = document.getElementById('btn-save-user');
     if (saveUserBtn) {
         saveUserBtn.addEventListener('click', (e) => {
@@ -69,6 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ==========================================
+    // 3. PANEL MASTER: CATÁLOGO DE VACUNAS
+    // ==========================================
     const saveCatalogBtn = document.getElementById('btn-save-catalog');
     if (saveCatalogBtn) {
         saveCatalogBtn.addEventListener('click', (e) => {
@@ -97,28 +121,59 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const saveSubBtn = document.getElementById('btn-save-sub');
-    if (saveSubBtn) {
-        saveSubBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const municipality = document.getElementById('sub-municipality')?.value || '';
-            const vaccine = document.getElementById('sub-vaccine')?.value || '';
-            const doses = document.getElementById('sub-doses')?.value.trim() || '';
-            const date = document.getElementById('sub-date')?.value || '';
-            const tableBody = document.getElementById('subregion-report-list');
+    // ==========================================
+    // 4. MÓDULO SUBREGIÓN: EMISIÓN DE CARNET DE SALUD
+    // ==========================================
+    const citizenCedulaInput = document.getElementById('citizen-cedula');
+    if (citizenCedulaInput) {
+        citizenCedulaInput.addEventListener('blur', () => {
+            const cedula = citizenCedulaInput.value.trim().replace(/\D/g, '');
+            const registro = consultasPublicas[cedula];
 
-            if (!municipality || !vaccine || !doses || !date) {
-                alert('Complete todos los campos del reporte.');
+            if (registro) {
+                const f1 = document.getElementById('citizen-first-name');
+                const f2 = document.getElementById('citizen-second-name');
+                const l1 = document.getElementById('citizen-first-lastname');
+                const l2 = document.getElementById('citizen-second-lastname');
+                const muni = document.getElementById('citizen-municipality');
+                const blood = document.getElementById('health-blood-type');
+
+                if (f1) f1.value = registro.firstname1 || '';
+                if (f2) f2.value = registro.firstname2 || '';
+                if (l1) l1.value = registro.lastname1 || '';
+                if (l2) l2.value = registro.lastname2 || '';
+                if (muni) muni.value = registro.municipality || '';
+                if (blood && registro.bloodType) blood.value = registro.bloodType;
+            }
+        });
+    }
+
+    const saveHealthCardBtn = document.getElementById('btn-save-health-card');
+    if (saveHealthCardBtn) {
+        saveHealthCardBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const cedula = document.getElementById('citizen-cedula')?.value.trim();
+            const f1 = document.getElementById('citizen-first-name')?.value.trim();
+            const l1 = document.getElementById('citizen-first-lastname')?.value.trim();
+            const bloodType = document.getElementById('health-blood-type')?.value;
+            const condition = document.getElementById('health-condition')?.value;
+            const expiry = document.getElementById('health-expiry')?.value;
+            const tableBody = document.getElementById('health-card-list');
+
+            if (!cedula || !f1 || !l1 || !bloodType || !condition || !expiry) {
+                alert('Por favor complete los campos obligatorios del ciudadano y del carnet.');
                 return;
             }
 
             if (tableBody) {
+                const nombreCompleto = `${f1} ${l1}`;
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
-                    <td><strong>${municipality}</strong></td>
-                    <td>${vaccine}</td>
-                    <td>${doses} dosis</td>
-                    <td>${date}</td>
+                    <td><strong>${cedula}</strong></td>
+                    <td>${nombreCompleto}</td>
+                    <td><span class="badge-role">${bloodType}</span></td>
+                    <td>${condition}</td>
+                    <td>${expiry}</td>
                     <td><button type="button" class="btn-delete">Eliminar</button></td>
                 `;
 
@@ -130,72 +185,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function agregarFilaVacuna(tableBody, vacuna, estado, fecha, lote, esPendiente) {
-        const badge = esPendiente
-            ? '<span class="badge-danger">Pendiente</span>'
-            : '<span class="badge-success">Aplicado</span>';
-
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td><strong>${vacuna}</strong></td>
-            <td>${badge}</td>
-            <td>${fecha}</td>
-            <td>${lote}</td>
-            <td><button type="button" class="btn-delete">Eliminar</button></td>
-        `;
-
-        newRow.querySelector('.btn-delete').addEventListener('click', () => newRow.remove());
-        tableBody.appendChild(newRow);
-    }
-
-    const addDoseBtn = document.getElementById('btn-add-dose');
-    if (addDoseBtn) {
-        addDoseBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const vaccineSelect = document.getElementById('select-vaccine').value;
-            const doseSelect = document.getElementById('select-dose-num').value;
-            const dateInput = document.getElementById('input-date').value;
-            const lotInput = document.getElementById('input-lot').value.trim();
-            const tableBody = document.getElementById('dynamic-vaccine-list');
-
-            if (!vaccineSelect || !dateInput || !lotInput || !tableBody) {
-                alert('Seleccione vacuna, fecha y lote.');
-                return;
-            }
-
-            const etiqueta = `${vaccineSelect} (${doseSelect})`;
-            agregarFilaVacuna(tableBody, etiqueta, 'Aplicado', dateInput, lotInput, false);
-
-            document.getElementById('select-vaccine').value = '';
-            document.getElementById('input-date').value = '';
-            document.getElementById('input-lot').value = '';
-        });
-    }
-
-    const addPendingBtn = document.getElementById('btn-add-pending');
-    if (addPendingBtn) {
-        addPendingBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const vaccineSelect = document.getElementById('select-vaccine-pending').value;
-            const doseSelect = document.getElementById('select-dose-num-pending').value;
-            const dateInput = document.getElementById('input-date-pending').value || '—';
-            const noteInput = document.getElementById('input-lot-pending').value.trim() || '—';
-            const tableBody = document.getElementById('dynamic-vaccine-list');
-
-            if (!vaccineSelect || !tableBody) {
-                alert('Seleccione la vacuna pendiente.');
-                return;
-            }
-
-            const etiqueta = `${vaccineSelect} (${doseSelect})`;
-            agregarFilaVacuna(tableBody, etiqueta, 'Pendiente', dateInput, noteInput, true);
-
-            document.getElementById('select-vaccine-pending').value = '';
-            document.getElementById('input-date-pending').value = '';
-            document.getElementById('input-lot-pending').value = '';
-        });
-    }
-
+    // ==========================================
+    // 5. MÓDULO CONSULTA PÚBLICA (CONSULTA.HTML)
+    // ==========================================
     const searchPublicBtn = document.getElementById('btn-search-public');
     if (searchPublicBtn) {
         searchPublicBtn.addEventListener('click', () => {
@@ -203,7 +195,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const resultCard = document.getElementById('public-result-card');
             const resCedula = document.getElementById('res-cedula');
             const resNombre = document.getElementById('res-nombre');
-            const resCentro = document.getElementById('res-centro');
+            const resMuni = document.getElementById('res-municipality');
+            const resBlood = document.getElementById('res-blood-type');
+            const resCondition = document.getElementById('res-condition');
+            const resExpiry = document.getElementById('res-expiry');
             const resEstatus = document.getElementById('res-estatus');
             const vaccineList = document.getElementById('public-vaccine-list');
 
@@ -219,41 +214,43 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (!registro) {
-                if (resultCard) {
-                    resultCard.classList.remove('is-hidden');
-                }
+                if (resultCard) resultCard.classList.remove('is-hidden');
                 if (resNombre) resNombre.textContent = 'No registrado';
-                if (resCentro) resCentro.textContent = '—';
+                if (resMuni) resMuni.textContent = '—';
+                if (resBlood) resBlood.textContent = '—';
+                if (resCondition) resCondition.textContent = '—';
+                if (resExpiry) resExpiry.textContent = '—';
                 if (resEstatus) {
-                    resEstatus.textContent = 'Sin datos';
+                    resEstatus.textContent = 'Sin datos en el sistema';
                     resEstatus.className = 'badge-danger';
                 }
                 if (vaccineList) {
-                    vaccineList.innerHTML = '<tr><td colspan="3">No hay vacunas registradas para esta cédula.</td></tr>';
+                    vaccineList.innerHTML = '<tr><td colspan="3">No hay registros asociados a esta cédula.</td></tr>';
                 }
                 return;
             }
 
-            if (resultCard) {
-                resultCard.classList.remove('is-hidden');
-            }
+            if (resultCard) resultCard.classList.remove('is-hidden');
             if (resNombre) {
-                resNombre.textContent = registro.nombre;
+                resNombre.textContent = `${registro.firstname1} ${registro.firstname2 || ''} ${registro.lastname1} ${registro.lastname2 || ''}`.trim();
             }
-            if (resCentro) {
-                resCentro.textContent = registro.centro;
-            }
+            if (resMuni) resMuni.textContent = registro.municipality || '—';
+            if (resBlood) resBlood.textContent = registro.bloodType || 'No asignado';
+            if (resCondition) resCondition.textContent = registro.condition || 'Pendiente de validación';
+            if (resExpiry) resExpiry.textContent = registro.expiry || '—';
+
             if (resEstatus) {
-                if (registro.vacunas.length > 0) {
-                    resEstatus.textContent = 'Con dosis registradas';
-                    resEstatus.className = 'badge-ok';
+                if (registro.condition && registro.bloodType) {
+                    resEstatus.textContent = 'Carnet de Salud Emitido y Vigente';
+                    resEstatus.className = 'badge-success';
                 } else {
-                    resEstatus.textContent = 'Sin dosis registradas';
+                    resEstatus.textContent = 'En proceso de validación subregional';
                     resEstatus.className = 'badge-warning';
                 }
             }
+
             if (vaccineList) {
-                if (registro.vacunas.length === 0) {
+                if (!registro.vacunas || registro.vacunas.length === 0) {
                     vaccineList.innerHTML = '<tr><td colspan="3">No hay vacunas registradas.</td></tr>';
                 } else {
                     vaccineList.innerHTML = registro.vacunas.map((item) => `

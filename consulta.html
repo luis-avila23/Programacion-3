@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIVAN - Consulta Ciudadana de Vacunación</title>
+    <title>SIVAN - Consulta Ciudadana y Carnet de Salud</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -22,32 +22,36 @@
 
         <section class="card">
             <h2>Portal de Consulta Ciudadana</h2>
-            <p class="section-desc">Ingrese su número de cédula para consultar el estatus de vacunación registrado.</p>
+            <p class="section-desc">Ingrese su número de cédula para consultar el estatus de su Carnet de Salud y vacunación.</p>
             <div class="form-group search-row">
                 <label for="search-document">Número de Cédula</label>
                 <div class="input-with-btn">
-                    <input type="text" id="search-document" placeholder="Ej: 12345678">
+                    <input type="text" id="search-document" placeholder="Ej: V-12345678">
                     <button type="button" id="btn-search-public" class="btn btn-primary">Consultar</button>
                 </div>
             </div>
         </section>
 
         <section class="card consult-result-card is-hidden" id="public-result-card">
-            <h2>Resultado de la consulta</h2>
+            <h2>Resultado de la Consulta y Carnet de Salud</h2>
             <p class="section-desc">Documento consultado: <strong id="res-cedula"></strong></p>
 
             <div class="consult-summary">
                 <p><strong>Titular:</strong> <span id="res-nombre">—</span></p>
-                <p><strong>Centro de salud:</strong> <span id="res-centro">—</span></p>
-                <p><strong>Estatus:</strong> <span id="res-estatus" class="badge-warning">—</span></p>
+                <p><strong>Municipio / Jurisdicción:</strong> <span id="res-municipality">—</span></p>
+                <p><strong>Tipo de Sangre / RH:</strong> <span id="res-blood-type">—</span></p>
+                <p><strong>Apto Sanitario / Condición:</strong> <span id="res-condition">—</span></p>
+                <p><strong>Vencimiento del Carnet:</strong> <span id="res-expiry">—</span></p>
+                <p><strong>Estatus del Trámite:</strong> <span id="res-estatus" class="badge-warning">—</span></p>
             </div>
 
+            <h3 class="sub-title" style="margin-top: 25px;">Historial de Vacunación</h3>
             <div class="table-wrapper">
                 <table class="vaccine-table">
                     <thead>
                         <tr>
-                            <th>Vacuna</th>
-                            <th>Dosis</th>
+                            <th>Vacuna / Biológico</th>
+                            <th>Dosis / Esquema</th>
                             <th>Estado</th>
                         </tr>
                     </thead>
