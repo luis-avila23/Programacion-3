@@ -83,20 +83,26 @@ Ejemplo: **Guardar** en el expediente llega a `routes/expediente.js`, que llama 
 
 ```
 Programacion-3/
-├── app.js                  Arma Express, la sesión y las direcciones
-├── bin/www                 Arranca el servidor en el puerto 3000
-├── conexion.js             Pool de MySQL hacia programacion_3
-├── package.json            Dependencias y el comando npm start
-├── routes/                 Qué hacer en cada URL
-├── models/                 Consultas a la base
-├── views/                  Textos y formularios de las pantallas
-├── assets/                 CSS y el logo
-└── database/xampp.sql      Script para crear todo en phpMyAdmin
+├── app.js
+├── conexion.js
+├── package.json
+├── bin/
+├── routes/
+├── models/
+├── views/
+├── assets/
+└── database/
 ```
 
-### routes
+Los archivos sueltos de la raíz no son carpetas, pero arman el resto: `app.js` crea Express, la sesión y reparte cada dirección; `conexion.js` abre el pool hacia `programacion_3`; `package.json` lista las dependencias y el comando `npm start`.
 
-Cada archivo escucha una parte de la dirección.
+### `bin/`
+
+Arranca el proceso. `npm start` ejecuta `bin/www`, que carga `app.js`, crea el servidor HTTP y lo deja escuchando en el puerto 3000. Aquí no hay pantallas ni consultas: solo el encendido.
+
+### `routes/`
+
+Recibe lo que llega del navegador. Cada archivo escucha una parte de la dirección. Revisa que la sesión corresponda al rol, que los campos no vengan vacíos, llama al modelo y después redirige o vuelve a dibujar la página.
 
 | Archivo | Dirección | Qué hace |
 |---|---|---|
@@ -108,9 +114,11 @@ Cada archivo escucha una parte de la dirección.
 | `routes/consulta.js` | `/consulta` | Consulta pública |
 | `routes/sesion.js` | — | No es una página. Impide entrar a una pantalla de otro rol |
 
-Cerrar sesión está en `/logout`, definido en `app.js`.
+Cerrar sesión está en `/logout`, definido en `app.js`. Los avisos cortos (“Expediente guardado”, “Complete la cédula”, “Usuario o contraseña incorrectos”) también están en el archivo de `routes/` de esa pantalla, no en la vista. El título que va al lado de **SIVAN** en la barra lo escribe la ruta al abrir la página.
 
-### models
+### `models/`
+
+Habla con MariaDB. Cada archivo arma los `SELECT`, `INSERT` y `DELETE` de una parte del sistema. Los valores van con `?`, no escritos dentro del texto SQL.
 
 | Archivo | Tabla que toca |
 |---|---|
@@ -121,12 +129,12 @@ Cerrar sesión está en `/logout`, definido en `app.js`.
 | `models/usuarios.js` | `usuarios` |
 | `models/vacunas.js` | `vacunas` |
 | `models/auditoria.js` | `auditoria_logs` y el conteo que ve el Master |
-| `models/territorio.js` | Traduce las opciones del formulario (Roscio, San Juan, Distrito 1) a los id de la base |
+| `models/territorio.js` | No inserta filas. Traduce las opciones del formulario (Roscio, San Juan, Distrito 1) a los id de la base |
 | `models/consultar.js` | Función que usan los demás para ejecutar `conexion.query` |
 
-### views
+### `views/`
 
-Aquí se cambia el texto que se lee en la página.
+El HTML que ve el usuario, escrito en EJS. El servidor rellena esos archivos con los datos que trajo el modelo: formularios, tablas y avisos. `header.ejs` y `footer.ejs` se repiten en las pantallas. Con `npm start` ya corriendo, un cambio de texto se ve al recargar el navegador, sin reiniciar Node.
 
 | Si quieres cambiar… | Archivo |
 |---|---|
@@ -136,15 +144,18 @@ Aquí se cambia el texto que se lee en la página.
 | Panel master | `views/master.ejs` |
 | Consulta del ciudadano | `views/consulta.ejs` |
 | Barra de arriba y “Cerrar Sesión” | `views/header.ejs` |
+| Pie de las pantallas | `views/footer.ejs` |
 | Página de error | `views/error.ejs` |
 
-El título que va al lado de **SIVAN** en la barra no está en el header. Lo escribe la ruta al abrir la página: `routes/expediente.js`, `routes/subregion.js`, `routes/master.js` y `routes/consulta.js`.
+### `assets/`
 
-Los avisos cortos (“Expediente guardado”, “Complete la cédula”, “Usuario o contraseña incorrectos”) también están en el `routes` de esa pantalla.
+Archivos estáticos que Express publica en `/assets`. No hay lógica ni consultas.
 
-Con `npm start` ya corriendo, guardas el archivo y recargas el navegador. Un cambio de texto no obliga a reiniciar el servidor.
+`assets/css/` tiene los estilos: `variables.css` (colores), `layout.css` (barra y página), `components.css` (formularios y botones), `tables.css` (tablas) y `style.css`, que los junta. `assets/image/` tiene el logo `SIVAN-LOGO.png`.
 
-Los estilos están en `assets/css/`: `variables.css` (colores), `layout.css` (barra y página), `components.css` (formularios y botones), `tables.css` (tablas) y `style.css`, que los junta. El logo es `assets/image/SIVAN-LOGO.png`. Express publica esa carpeta en `/assets`.
+### `database/`
+
+El script para crear la base en phpMyAdmin: `database/xampp.sql`. Crea `programacion_3`, las tablas, el catálogo de Venezuela y los usuarios de prueba. No lo lee Node al arrancar; se importa a mano desde XAMPP. Importarlo otra vez borra esas tablas y las vuelve a crear.
 
 ## Dónde se guardan las opciones del formulario
 
