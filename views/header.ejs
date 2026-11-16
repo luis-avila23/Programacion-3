@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= tituloPagina %></title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <img src="/assets/image/SIVAN-LOGO.png" alt="logo de SIVAN" class="logo-html">
+            <h1>SIVAN <span>| <%= titulo %></span></h1>
+        </div>
+        <div class="navbar-actions">
+            <% if (typeof publico !== "undefined" && publico) { %>
+                <a href="/login" class="btn-logout">Acceso Institucional</a>
+            <% } else { %>
+                <span class="user-name"><%= usuario || "Usuario" %></span>
+                <a href="/logout" class="btn-logout">Cerrar Sesión</a>
+            <% } %>
+        </div>
+    </header>
+    <main class="container">
+        <% if (mensaje) { %>
+            <p class="section-desc"><%= mensaje %></p>
+        <% } %>

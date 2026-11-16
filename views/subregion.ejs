@@ -1,0 +1,113 @@
+<%- include("header"); %>
+
+<form method="post" action="/subregion/guardar">
+    <section class="card">
+        <h2>Emisión de Carnet de Salud</h2>
+        <p class="section-desc">Busque la cédula, complete la información médica y genere el carnet.</p>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="citizen-cedula">Cédula de Identidad</label>
+                <div class="input-with-btn">
+                    <input type="text" id="citizen-cedula" name="cedula" value="<%= persona.cedula %>" placeholder="Ej: V-12345678">
+                    <button type="submit" class="btn btn-primary" formaction="/subregion" formmethod="get">Buscar</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="citizen-first-name">Primer Nombre</label>
+                <input type="text" id="citizen-first-name" name="firstname1" value="<%= persona.firstname1 %>" placeholder="Primer nombre">
+            </div>
+            <div class="form-group">
+                <label for="citizen-second-name">Segundo Nombre</label>
+                <input type="text" id="citizen-second-name" name="firstname2" value="<%= persona.firstname2 %>" placeholder="Segundo nombre">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="citizen-first-lastname">Primer Apellido</label>
+                <input type="text" id="citizen-first-lastname" name="lastname1" value="<%= persona.lastname1 %>" placeholder="Primer apellido">
+            </div>
+            <div class="form-group">
+                <label for="citizen-second-lastname">Segundo Apellido</label>
+                <input type="text" id="citizen-second-lastname" name="lastname2" value="<%= persona.lastname2 %>" placeholder="Segundo apellido">
+            </div>
+            <div class="form-group">
+                <label for="citizen-municipality">Municipio de Residencia</label>
+                <select id="citizen-municipality" name="municipality">
+                    <option value="">Seleccione municipio...</option>
+                    <option value="Roscio" <%= persona.municipality === "Roscio" ? "selected" : "" %>>Juan Germán Roscio</option>
+                    <option value="Infante" <%= persona.municipality === "Infante" ? "selected" : "" %>>Leonardo Infante</option>
+                    <option value="Miranda" <%= persona.municipality === "Miranda" ? "selected" : "" %>>Francisco de Miranda</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="health-blood-type">Tipo de Sangre / Factor RH</label>
+                <select id="health-blood-type" name="bloodType">
+                    <option value="">Seleccione...</option>
+                    <% [
+                        ["O+", "O Positivo (O+)"],
+                        ["O-", "O Negativo (O-)"],
+                        ["A+", "A Positivo (A+)"],
+                        ["A-", "A Negativo (A-)"],
+                        ["B+", "B Positivo (B+)"],
+                        ["B-", "B Negativo (B-)"],
+                        ["AB+", "AB Positivo (AB+)"],
+                        ["AB-", "AB Negativo (AB-)"]
+                    ].forEach(function (tipo) { %>
+                        <option value="<%= tipo[0] %>" <%= persona.bloodType === tipo[0] ? "selected" : "" %>><%= tipo[1] %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="health-condition">Condición / Apto Sanitario</label>
+                <select id="health-condition" name="condition">
+                    <option value="">Seleccione condición...</option>
+                    <option value="Apto Manipulación de Alimentos">Apto para Manipulación de Alimentos</option>
+                    <option value="Apto Laboral">Apto Laboral</option>
+                    <option value="Control General">Control General de Salud</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="health-expiry">Fecha de Vencimiento del Carnet</label>
+                <input type="date" id="health-expiry" name="expiry" class="table-input">
+            </div>
+        </div>
+
+        <div class="form-actions-inline" style="margin-bottom: 20px;">
+            <button type="submit" class="btn btn-action">+ Registrar / Generar Carnet</button>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="vaccine-table">
+                <thead>
+                    <tr>
+                        <th>Cédula</th>
+                        <th>Ciudadano</th>
+                        <th>Tipo Sangre</th>
+                        <th>Apto Sanitario</th>
+                        <th>Vencimiento</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% carnets.forEach(function (carnet) { %>
+                        <tr>
+                            <td><strong><%= carnet.cedula || "—" %></strong></td>
+                            <td><%= carnet.nombre %></td>
+                            <td><span class="badge-role"><%= carnet.bloodType || "" %></span></td>
+                            <td><%= carnet.condicion || "" %></td>
+                            <td><%= carnet.expiry ? String(carnet.expiry).slice(0, 10) : "" %></td>
+                            <td><a class="btn-delete" href="/subregion/eliminar/<%= carnet.id %>">Eliminar</a></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</form>
+
+<%- include("footer"); %>

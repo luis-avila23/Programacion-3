@@ -1,0 +1,82 @@
+<%- include("header"); %>
+
+<section class="card">
+    <h2>Portal de Consulta Ciudadana</h2>
+    <p class="section-desc">Ingrese su número de cédula para consultar el estatus de su Carnet de Salud y vacunación.</p>
+    <form method="get" action="/consulta">
+        <div class="form-group search-row">
+            <label for="search-document">Número de Cédula</label>
+            <div class="input-with-btn">
+                <input type="text" id="search-document" name="cedula" value="<%= cedula %>" placeholder="Ej: V-12345678">
+                <button type="submit" class="btn btn-primary">Consultar</button>
+            </div>
+        </div>
+    </form>
+</section>
+
+<% if (buscado) { %>
+<section class="card consult-result-card">
+    <h2>Resultado de la Consulta y Carnet de Salud</h2>
+    <p class="section-desc">Documento consultado: <strong><%= cedula %></strong></p>
+
+    <% if (!registro) { %>
+        <div class="consult-summary">
+            <p><strong>Titular:</strong> No registrado</p>
+            <p><strong>Municipio / Jurisdicción:</strong> —</p>
+            <p><strong>Tipo de Sangre / RH:</strong> —</p>
+            <p><strong>Apto Sanitario / Condición:</strong> —</p>
+            <p><strong>Vencimiento del Carnet:</strong> —</p>
+            <p><strong>Estatus del Trámite:</strong> <span class="badge-danger">Sin datos en el sistema</span></p>
+        </div>
+        <h3 class="sub-title" style="margin-top: 25px;">Historial de Vacunación</h3>
+        <div class="table-wrapper">
+            <table class="vaccine-table">
+                <tbody>
+                    <tr><td colspan="3">No hay registros asociados a esta cédula.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    <% } else { %>
+        <div class="consult-summary">
+            <p><strong>Titular:</strong> <%= (registro.firstname1 + " " + (registro.firstname2 || "") + " " + registro.lastname1 + " " + (registro.lastname2 || "")).trim() %></p>
+            <p><strong>Municipio / Jurisdicción:</strong> <%= registro.municipality || "—" %></p>
+            <p><strong>Tipo de Sangre / RH:</strong> <%= registro.bloodType || "No asignado" %></p>
+            <p><strong>Apto Sanitario / Condición:</strong> <%= registro.condition || "Pendiente de validación" %></p>
+            <p><strong>Vencimiento del Carnet:</strong> <%= registro.expiry || "—" %></p>
+            <p><strong>Estatus del Trámite:</strong>
+                <% if (registro.condition && registro.bloodType) { %>
+                    <span class="badge-success">Carnet de Salud Emitido y Vigente</span>
+                <% } else { %>
+                    <span class="badge-warning">En proceso de validación subregional</span>
+                <% } %>
+            </p>
+        </div>
+        <h3 class="sub-title" style="margin-top: 25px;">Historial de Vacunación</h3>
+        <div class="table-wrapper">
+            <table class="vaccine-table">
+                <thead>
+                    <tr>
+                        <th>Vacuna / Biológico</th>
+                        <th>Dosis / Esquema</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (!registro.dosis.length) { %>
+                        <tr><td colspan="3">No hay vacunas registradas.</td></tr>
+                    <% } %>
+                    <% registro.dosis.forEach(function (item) { %>
+                        <tr>
+                            <td><strong><%= item.nombre %></strong></td>
+                            <td><%= item.numero %></td>
+                            <td><span class="badge-success"><%= item.estado %></span></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</section>
+<% } %>
+
+<%- include("footer"); %>

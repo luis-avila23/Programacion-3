@@ -19,7 +19,30 @@ SET time_zone = "+00:00";
 
 --
 -- Base de datos: `programacion_3`
+-- Importar este archivo completo en phpMyAdmin con MySQL de XAMPP encendido.
+-- Crea la base, las tablas, el catálogo geográfico y los datos de prueba.
 --
+
+CREATE DATABASE IF NOT EXISTS `programacion_3` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `programacion_3`;
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `auditoria_logs`;
+DROP TABLE IF EXISTS `carnet_examenes`;
+DROP TABLE IF EXISTS `carnet_salud`;
+DROP TABLE IF EXISTS `dosis`;
+DROP TABLE IF EXISTS `personas`;
+DROP TABLE IF EXISTS `usuarios`;
+DROP TABLE IF EXISTS `centros`;
+DROP TABLE IF EXISTS `subregiones`;
+DROP TABLE IF EXISTS `vacunas`;
+DROP TABLE IF EXISTS `examenes`;
+DROP TABLE IF EXISTS `parroquias`;
+DROP TABLE IF EXISTS `municipios`;
+DROP TABLE IF EXISTS `estados`;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- --------------------------------------------------------
 
@@ -74,7 +97,8 @@ CREATE TABLE `carnet_salud` (
 --
 
 INSERT INTO `carnet_salud` (`id`, `Codigo`, `Dosis_id`, `Examenes_id`, `Personas_id`, `Condicion_sanitaria`, `Fecha_emision`, `Fecha_vencimiento`, `Estatus`) VALUES
-(1, 1001, 1, 1, NULL, NULL, NULL, NULL, 'Pendiente');
+(1, 1, 1, 1, 1, 'Apto para Manipulación de Alimentos', '2026-11-16', '2027-11-15', 'Emitido'),
+(2, 2, NULL, NULL, 2, 'Apto Laboral', '2026-11-16', '2027-06-30', 'Emitido');
 
 -- --------------------------------------------------------
 
@@ -94,7 +118,7 @@ CREATE TABLE `centros` (
 --
 
 INSERT INTO `centros` (`id`, `Nombre`, `id_parroquia`, `Subregiones_id`) VALUES
-(1, 'Aurora', NULL, NULL);
+(1, 'Aurora', 432, 1);
 
 -- --------------------------------------------------------
 
@@ -105,10 +129,11 @@ INSERT INTO `centros` (`id`, `Nombre`, `id_parroquia`, `Subregiones_id`) VALUES
 CREATE TABLE `dosis` (
   `id` int(10) UNSIGNED NOT NULL,
   `Numero` varchar(255) DEFAULT NULL,
-  `Vacunas_id` int(11) DEFAULT NULL,
-  `Personas_id` int(11) DEFAULT NULL,
+  `Vacunas_id` int(10) UNSIGNED DEFAULT NULL,
+  `Personas_id` int(10) UNSIGNED DEFAULT NULL,
   `Fecha_aplicacion` date DEFAULT NULL,
   `Lote` varchar(50) DEFAULT NULL,
+  `Observacion` varchar(255) DEFAULT NULL,
   `Estado` enum('Aplicado','Pendiente') DEFAULT 'Aplicado'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1707,7 +1732,7 @@ CREATE TABLE `personas` (
   `Segundo_nombre` varchar(255) DEFAULT NULL,
   `Primer_apellido` varchar(255) DEFAULT NULL,
   `Segundo_apellido` varchar(255) DEFAULT NULL,
-  `Cedula` int(11) DEFAULT NULL,
+  `Cedula` varchar(20) DEFAULT NULL,
   `Edad` varchar(255) DEFAULT NULL,
   `Correo` varchar(255) DEFAULT NULL,
   `Fecha_nacimiento` date DEFAULT NULL,
@@ -1723,8 +1748,8 @@ CREATE TABLE `personas` (
 --
 
 INSERT INTO `personas` (`id`, `Primer_nombre`, `Segundo_nombre`, `Primer_apellido`, `Segundo_apellido`, `Cedula`, `Edad`, `Correo`, `Fecha_nacimiento`, `Examenes_id`, `Tipo_sangre`, `id_parroquia`, `Subregiones_id`, `Centros_id`) VALUES
-(1, 'Juan', 'Carlos', 'Pérez', 'Gómez', 12345678, '30', 'juan.perez@email.com', '1996-05-12', NULL, NULL, NULL, NULL, NULL),
-(2, 'María', 'Alejandra', 'Rodríguez', 'Blanco', 87654321, '25', 'maria.rodriguez@email.com', '2001-08-20', NULL, NULL, NULL, NULL, NULL);
+(1, 'Juan', 'Carlos', 'Pérez', 'Gómez', '12345678', '30', 'juan.perez@email.com', '1996-05-12', NULL, 'O+', 432, 1, 1),
+(2, 'María', 'Alejandra', 'Rodríguez', 'Blanco', '87654321', '25', 'maria.rodriguez@email.com', '2001-08-20', NULL, 'A+', 439, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -1759,18 +1784,22 @@ CREATE TABLE `usuarios` (
   `Nombre` varchar(255) DEFAULT NULL,
   `Apellido` varchar(255) DEFAULT NULL,
   `Cedula` int(11) DEFAULT NULL,
-  `Centros_id` int(11) DEFAULT NULL,
+  `Centros_id` int(10) UNSIGNED DEFAULT NULL,
   `Cargo` varchar(255) DEFAULT NULL,
   `Correo` varchar(255) DEFAULT NULL,
-  `Password` varchar(255) DEFAULT NULL
+  `Password` varchar(255) DEFAULT NULL,
+  `Rol` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `Nombre`, `Apellido`, `Cedula`, `Centros_id`, `Cargo`, `Correo`, `Password`) VALUES
-(1, 'Luis', 'Avila', 32645097, 1, 'Maestro', NULL, NULL);
+INSERT INTO `usuarios` (`id`, `Nombre`, `Apellido`, `Cedula`, `Centros_id`, `Cargo`, `Correo`, `Password`, `Rol`) VALUES
+(1, 'Luis', 'Avila', 32645097, 1, 'Maestro', NULL, NULL, NULL),
+(2, 'Administrador', 'Nacional', NULL, 1, 'Master', 'master@sivan.gob.ve', 'sivan123', 'Master'),
+(3, 'Coordinación', 'Subregional', NULL, 1, 'Subregion', 'subregion@sivan.gob.ve', 'sivan123', 'Subregion'),
+(4, 'Personal', 'Vacunador', NULL, 1, 'Vacunador', 'vacunador@sivan.gob.ve', 'sivan123', 'Vacunador');
 
 -- --------------------------------------------------------
 
@@ -1814,19 +1843,24 @@ ALTER TABLE `carnet_examenes`
 -- Indices de la tabla `carnet_salud`
 --
 ALTER TABLE `carnet_salud`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_carnet_persona` (`Personas_id`);
 
 --
 -- Indices de la tabla `centros`
 --
 ALTER TABLE `centros`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_centros_parroquia` (`id_parroquia`),
+  ADD KEY `fk_centros_subregion` (`Subregiones_id`);
 
 --
 -- Indices de la tabla `dosis`
 --
 ALTER TABLE `dosis`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_dosis_vacuna` (`Vacunas_id`),
+  ADD KEY `fk_dosis_persona` (`Personas_id`);
 
 --
 -- Indices de la tabla `estados`
@@ -1858,7 +1892,11 @@ ALTER TABLE `parroquias`
 -- Indices de la tabla `personas`
 --
 ALTER TABLE `personas`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uk_personas_cedula` (`Cedula`),
+  ADD KEY `fk_personas_parroquia` (`id_parroquia`),
+  ADD KEY `fk_personas_subregion` (`Subregiones_id`),
+  ADD KEY `fk_personas_centro` (`Centros_id`);
 
 --
 -- Indices de la tabla `subregiones`
@@ -1872,7 +1910,9 @@ ALTER TABLE `subregiones`
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uk_usuarios_correo` (`Correo`),
+  ADD KEY `fk_usuarios_centro` (`Centros_id`);
 
 --
 -- Indices de la tabla `vacunas`
@@ -1954,7 +1994,7 @@ ALTER TABLE `subregiones`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `vacunas`
@@ -1997,6 +2037,41 @@ ALTER TABLE `parroquias`
 ALTER TABLE `subregiones`
   ADD CONSTRAINT `fk_subregiones_estado` FOREIGN KEY (`id_estado`) REFERENCES `estados` (`id_estado`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_subregiones_municipio` FOREIGN KEY (`id_municipio`) REFERENCES `municipios` (`id_municipio`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `dosis`
+--
+ALTER TABLE `dosis`
+  ADD CONSTRAINT `fk_dosis_vacuna` FOREIGN KEY (`Vacunas_id`) REFERENCES `vacunas` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_dosis_persona` FOREIGN KEY (`Personas_id`) REFERENCES `personas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `personas`
+--
+ALTER TABLE `personas`
+  ADD CONSTRAINT `fk_personas_parroquia` FOREIGN KEY (`id_parroquia`) REFERENCES `parroquias` (`id_parroquia`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_personas_subregion` FOREIGN KEY (`Subregiones_id`) REFERENCES `subregiones` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_personas_centro` FOREIGN KEY (`Centros_id`) REFERENCES `centros` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `centros`
+--
+ALTER TABLE `centros`
+  ADD CONSTRAINT `fk_centros_parroquia` FOREIGN KEY (`id_parroquia`) REFERENCES `parroquias` (`id_parroquia`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_centros_subregion` FOREIGN KEY (`Subregiones_id`) REFERENCES `subregiones` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `carnet_salud`
+--
+ALTER TABLE `carnet_salud`
+  ADD CONSTRAINT `fk_carnet_persona` FOREIGN KEY (`Personas_id`) REFERENCES `personas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD CONSTRAINT `fk_usuarios_centro` FOREIGN KEY (`Centros_id`) REFERENCES `centros` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

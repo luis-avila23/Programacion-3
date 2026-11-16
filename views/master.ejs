@@ -1,0 +1,130 @@
+<%- include("header"); %>
+
+<section class="card">
+    <h2>Monitoreo y Auditoría Nacional</h2>
+    <p class="section-desc">Vista de control global: dosis registradas por estado y municipio.</p>
+    <div class="table-wrapper">
+        <table class="vaccine-table">
+            <thead>
+                <tr>
+                    <th>Estado</th>
+                    <th>Municipio</th>
+                    <th>Total Dosis Nacionales</th>
+                    <th>Estado del Sistema</th>
+                    <th>Acción Master</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (!filas.length) { %>
+                    <tr><td colspan="5">No hay dosis registradas.</td></tr>
+                <% } %>
+                <% filas.forEach(function (fila) { %>
+                    <tr>
+                        <td><%= fila.estado %></td>
+                        <td><%= fila.municipio %></td>
+                        <td><%= fila.total %></td>
+                        <td>Operativo</td>
+                        <td>Auditado</td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="card">
+    <h2>Gestión de Usuarios y Accesos</h2>
+    <p class="section-desc">Cree credenciales y asigne roles. La contraseña inicial es sivan123.</p>
+    <form method="post" action="/master/usuarios">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="user-name">Nombre y Apellido</label>
+                <input type="text" id="user-name" name="nombre" placeholder="Ej: Dr. Carlos Mendoza">
+            </div>
+            <div class="form-group">
+                <label for="user-email">Correo Institucional</label>
+                <input type="email" id="user-email" name="correo" placeholder="carlos@salud.gob.ve">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="user-role">Rol / Perfil</label>
+                <select id="user-role" name="rol">
+                    <option value="">Seleccione rol...</option>
+                    <option value="Vacunador">Perfil 3: Vacunador (Operativo)</option>
+                    <option value="Subregion">Perfil 2: Subregión de Salud</option>
+                    <option value="Master">Perfil 1: Master (Admin)</option>
+                </select>
+            </div>
+            <div class="form-group form-group-btn">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-primary">+ Registrar Nuevo Usuario</button>
+            </div>
+        </div>
+        <div class="table-wrapper">
+            <table class="vaccine-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% usuarios.forEach(function (usuarioFila) { %>
+                        <tr>
+                            <td><strong><%= usuarioFila.nombre %></strong></td>
+                            <td><%= usuarioFila.correo %></td>
+                            <td><span class="badge-role"><%= usuarioFila.rol %></span></td>
+                            <td><a class="btn-delete" href="/master/usuarios/eliminar/<%= usuarioFila.id %>">Eliminar</a></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</section>
+
+<section class="card">
+    <h2>Actualización del Catálogo Nacional de Vacunas</h2>
+    <p class="section-desc">Agregue nuevos biológicos autorizados al esquema oficial de vacunación del país.</p>
+    <form method="post" action="/master/vacunas">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="catalog-vaccine">Nombre del Biológico</label>
+                <input type="text" id="catalog-vaccine" name="nombre" placeholder="Ej: Fiebre Amarilla">
+            </div>
+            <div class="form-group">
+                <label for="catalog-dose">Esquema Requerido</label>
+                <input type="text" id="catalog-dose" name="esquema" placeholder="Ej: Dosis Única">
+            </div>
+            <div class="form-group form-group-btn">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-action">+ Agregar al Catálogo</button>
+            </div>
+        </div>
+        <div class="table-wrapper">
+            <table class="vaccine-table">
+                <thead>
+                    <tr>
+                        <th>Biológico Autorizado</th>
+                        <th>Esquema</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% vacunas.forEach(function (vacuna) { %>
+                        <tr>
+                            <td><strong><%= vacuna.nombre %></strong></td>
+                            <td><%= vacuna.esquema %></td>
+                            <td><a class="btn-delete" href="/master/vacunas/eliminar/<%= vacuna.id %>">Eliminar</a></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</section>
+
+<%- include("footer"); %>

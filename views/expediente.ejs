@@ -1,0 +1,216 @@
+<%- include("header"); %>
+
+<form method="post" action="/expediente/guardar">
+    <section class="card patient-card">
+        <h2>Datos</h2>
+        <p class="section-desc">Ingrese la cédula y pulse Buscar. Si no existe, complete la ficha y guarde.</p>
+
+        <div class="form-group search-row">
+            <label for="document">Número de Cédula / Documento</label>
+            <div class="input-with-btn">
+                <input type="text" id="document" name="cedula" value="<%= persona.cedula %>" placeholder="Ej: V-12345678">
+                <button type="submit" class="btn btn-primary" formaction="/expediente" formmethod="get">Buscar</button>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="firstname1">Primer Nombre</label>
+                <input type="text" id="firstname1" name="firstname1" value="<%= persona.firstname1 %>" placeholder="Primer nombre">
+            </div>
+            <div class="form-group">
+                <label for="firstname2">Segundo Nombre</label>
+                <input type="text" id="firstname2" name="firstname2" value="<%= persona.firstname2 %>" placeholder="Segundo nombre">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="lastname1">Primer Apellido</label>
+                <input type="text" id="lastname1" name="lastname1" value="<%= persona.lastname1 %>" placeholder="Primer apellido">
+            </div>
+            <div class="form-group">
+                <label for="lastname2">Segundo Apellido</label>
+                <input type="text" id="lastname2" name="lastname2" value="<%= persona.lastname2 %>" placeholder="Segundo apellido">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="blood-type">Tipo de Sangre / Factor RH</label>
+                <select id="blood-type" name="bloodType">
+                    <option value="">Seleccione...</option>
+                    <% [
+                        ["O+", "O Positivo (O+)"],
+                        ["O-", "O Negativo (O-)"],
+                        ["A+", "A Positivo (A+)"],
+                        ["A-", "A Negativo (A-)"],
+                        ["B+", "B Positivo (B+)"],
+                        ["B-", "B Negativo (B-)"],
+                        ["AB+", "AB Positivo (AB+)"],
+                        ["AB-", "AB Negativo (AB-)"]
+                    ].forEach(function (tipo) { %>
+                        <option value="<%= tipo[0] %>" <%= persona.bloodType === tipo[0] ? "selected" : "" %>><%= tipo[1] %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" id="email" name="email" value="<%= persona.email %>" placeholder="ejemplo@correo.com">
+            </div>
+            <div class="form-group form-group-sm">
+                <label for="age">Edad (años)</label>
+                <input type="number" id="age" name="age" min="0" max="120" value="<%= persona.age %>" placeholder="Ej: 25">
+            </div>
+        </div>
+
+        <h3 class="sub-title">Ubicación y Jurisdicción Sanitaria</h3>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="state">Estado</label>
+                <select id="state" name="state">
+                    <option value="">Seleccione Estado...</option>
+                    <% ["Guárico", "Carabobo", "Miranda"].forEach(function (estado) { %>
+                        <option value="<%= estado %>" <%= persona.state === estado ? "selected" : "" %>><%= estado %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="municipality">Municipio</label>
+                <select id="municipality" name="municipality">
+                    <option value="">Seleccione Municipio...</option>
+                    <option value="Roscio" <%= persona.municipality === "Roscio" ? "selected" : "" %>>Juan Germán Roscio</option>
+                    <option value="Infante" <%= persona.municipality === "Infante" ? "selected" : "" %>>Leonardo Infante</option>
+                    <option value="Miranda" <%= persona.municipality === "Miranda" ? "selected" : "" %>>Francisco de Miranda</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="parish">Parroquia</label>
+                <select id="parish" name="parish">
+                    <option value="">Seleccione Parroquia...</option>
+                    <option value="SanJuan" <%= persona.parish === "SanJuan" ? "selected" : "" %>>San Juan de los Morros</option>
+                    <option value="Parapara" <%= persona.parish === "Parapara" ? "selected" : "" %>>Parapara</option>
+                    <option value="Cantagallo" <%= persona.parish === "Cantagallo" ? "selected" : "" %>>Cantagallo</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="subregion">Subregión de Salud / Área Sanitaria</label>
+                <select id="subregion" name="subregion">
+                    <option value="">Seleccione Subregión...</option>
+                    <option value="Distrito 1" <%= persona.subregion === "Distrito 1" ? "selected" : "" %>>Distrito Sanitario N° 1 (Central)</option>
+                    <option value="Distrito 2" <%= persona.subregion === "Distrito 2" ? "selected" : "" %>>Distrito Sanitario N° 2 (Sur)</option>
+                    <option value="Distrito 3" <%= persona.subregion === "Distrito 3" ? "selected" : "" %>>Distrito Sanitario N° 3 (Oriente)</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <section class="card record-card">
+        <h2>Esquema Nacional de Vacunación</h2>
+        <p class="section-desc">Seleccione el biológico, especifique la dosis correspondiente, ingrese la fecha, el lote y agregue el registro al expediente.</p>
+
+        <div class="form-row form-row-dose-block">
+            <div class="form-group col-flex-15">
+                <label for="select-vaccine">Vacuna / Biológico</label>
+                <select id="select-vaccine" name="nombre">
+                    <option value="">Seleccione vacuna...</option>
+                    <% vacunas.forEach(function (vacuna) { %>
+                        <option value="<%= vacuna.nombre %>"><%= vacuna.nombre %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group col-flex-12">
+                <label for="select-dose-num">Número de Dosis</label>
+                <select id="select-dose-num" name="numero">
+                    <option value="1ra Dosis">1ra Dosis</option>
+                    <option value="2da Dosis">2da Dosis</option>
+                    <option value="3ra Dosis">3ra Dosis</option>
+                    <option value="Refuerzo">Refuerzo</option>
+                    <option value="Dosis Única">Dosis Única</option>
+                </select>
+            </div>
+            <div class="form-group col-flex-1">
+                <label for="input-date">Fecha de Aplicación</label>
+                <input type="date" id="input-date" name="fecha" class="table-input">
+            </div>
+            <div class="form-group col-flex-1">
+                <label for="input-lot">N° Lote</label>
+                <input type="text" id="input-lot" name="lote" class="table-input" placeholder="Ej: LOT-9823">
+            </div>
+            <div class="form-group form-group-btn col-flex-1">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-primary btn-full" formaction="/expediente/dosis" formmethod="post" name="estado" value="Aplicado">+ Agregar Dosis</button>
+            </div>
+        </div>
+
+        <div class="form-row form-row-pending-block">
+            <div class="form-group col-flex-15">
+                <label for="select-vaccine-pending" class="label-pending">Vacuna pendiente</label>
+                <select id="select-vaccine-pending" name="nombrePendiente">
+                    <option value="">Seleccione vacuna...</option>
+                    <% vacunas.forEach(function (vacuna) { %>
+                        <option value="<%= vacuna.nombre %>"><%= vacuna.nombre %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group col-flex-12">
+                <label for="select-dose-num-pending" class="label-pending">Dosis requerida</label>
+                <select id="select-dose-num-pending" name="numeroPendiente">
+                    <option value="1ra Dosis">1ra Dosis</option>
+                    <option value="2da Dosis">2da Dosis</option>
+                    <option value="3ra Dosis">3ra Dosis</option>
+                    <option value="Refuerzo">Refuerzo</option>
+                    <option value="Dosis Única">Dosis Única</option>
+                </select>
+            </div>
+            <div class="form-group col-flex-1">
+                <label for="input-date-pending">Fecha estimada</label>
+                <input type="date" id="input-date-pending" name="fechaPendiente" class="table-input">
+            </div>
+            <div class="form-group col-flex-1">
+                <label for="input-lot-pending">Observación</label>
+                <input type="text" id="input-lot-pending" name="observacion" class="table-input" placeholder="Ej: Falta inocular">
+            </div>
+            <div class="form-group form-group-btn col-flex-1">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-pending" formaction="/expediente/dosis" formmethod="post" name="estado" value="Pendiente">+ Añadir pendiente</button>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="vaccine-table">
+                <thead>
+                    <tr>
+                        <th>Vacuna / Biológico y Esquema</th>
+                        <th>Estado</th>
+                        <th>Fecha de Aplicación</th>
+                        <th>Lote</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% persona.dosis.forEach(function (item) { %>
+                        <tr>
+                            <td><strong><%= item.nombre %> — <%= item.numero %></strong></td>
+                            <td><%= item.estado %></td>
+                            <td><%= item.fecha || "—" %></td>
+                            <td><%= item.estado === "Pendiente" ? (item.observacion || "—") : (item.lote || "—") %></td>
+                            <td><a class="btn-delete" href="/expediente/dosis/eliminar/<%= item.id %>?cedula=<%= persona.cedula %>">Eliminar</a></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="form-actions">
+            <a href="/expediente" class="btn btn-secondary">Limpiar Todo</a>
+            <button type="submit" class="btn btn-primary">Guardar Cambios del Expediente</button>
+        </div>
+    </section>
+</form>
+
+<%- include("footer"); %>

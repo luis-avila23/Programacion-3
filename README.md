@@ -1,129 +1,204 @@
 # SIVAN
 
-Sistema de Información Nacional de Vacunación. Registro local de personas, dosis y carnet de salud para un proyecto universitario. Corre solo en la máquina, con XAMPP. No se publica.
+Sistema de Información Nacional de Vacunación. Sirve para registrar personas, las dosis que se les aplican y el carnet de salud que emite la subregión. Es un proyecto universitario y corre solo en la computadora. No se publica en internet.
 
-## Qué hace
+La forma de programarlo es la del proyecto base de Node y MySQL: Express recibe el formulario, un modelo consulta MariaDB y una vista EJS pinta la página.
 
-Cuatro pantallas, según el rol:
+## Qué hace cada pantalla
 
-- **Vacunador** (`index.html`): ficha de la persona y dosis aplicadas o pendientes.
-- **Subregión** (`subregion.html`): busca por cédula y emite el carnet de salud.
-- **Master** (`master.html`): usuarios, catálogo de vacunas y conteo de dosis por municipio.
-- **Consulta ciudadana** (`consulta.html`): el ciudadano ve su carnet y sus vacunas. No pide login.
+Hay cuatro pantallas. Tres piden usuario y una es pública.
 
-El acceso institucional está en `login.html`. La contraseña de las tres cuentas de prueba es `sivan123`. Un usuario creado desde el panel Master entra con esa misma contraseña.
+| Rol | Correo | Contraseña | Al entrar abre |
+|---|---|---|---|
+| Master | master@sivan.gob.ve | sivan123 | `/master` |
+| Subregión | subregion@sivan.gob.ve | sivan123 | `/subregion` |
+| Vacunador | vacunador@sivan.gob.ve | sivan123 | `/expediente` |
+| Ciudadano | no usa cuenta | — | `/consulta` |
 
-| Correo | Pantalla |
+Un usuario creado desde el panel Master también entra con la contraseña `sivan123`.
+
+**Vacunador** (`/expediente`). Busca a la persona por cédula. Si no existe, se completa la ficha y se guarda. Desde la misma pantalla se agrega una dosis aplicada o una pendiente, y se puede eliminar.
+
+**Subregión** (`/subregion`). Busca la cédula, completa tipo de sangre, condición sanitaria y vencimiento, y genera el carnet. Cada clic crea un carnet nuevo. La tabla de abajo lista los que ya están guardados.
+
+**Master** (`/master`). Crea y elimina usuarios, agrega biológicos al catálogo y ve cuántas dosis hay por estado y municipio.
+
+**Consulta** (`/consulta`). Cualquiera escribe una cédula y ve el nombre, el municipio, la sangre, la condición del carnet, el vencimiento y las vacunas. No pide login.
+
+Para probar la consulta ya hay dos personas:
+
+| Cédula | Persona | Qué tiene |
+|---|---|---|
+| 12345678 | Juan Carlos Pérez Gómez | Sangre O+, carnet vigente, Toxoide Tetánico aplicado |
+| 87654321 | María Alejandra Rodríguez Blanco | Sangre A+, carnet laboral, sin vacunas |
+
+Si entras con un rol y abres la dirección de otro, el sistema te devuelve a tu propia pantalla.
+
+## Tecnologías
+
+| Pieza | Qué se usa |
 |---|---|
-| master@sivan.gob.ve | master.html |
-| subregion@sivan.gob.ve | subregion.html |
-| vacunador@sivan.gob.ve | index.html |
+| Servidor | Node.js y Express |
+| Pantallas | EJS. El HTML está en `views/` y el servidor lo rellena |
+| Estilos | CSS en `assets/css/` |
+| Base de datos | MariaDB, la que trae XAMPP. El paquete de Node se llama `mysql` |
+| Sesión | `express-session`. Guarda el correo, el rol y el id del usuario mientras la ventana sigue abierta |
 
-Al salir de la cédula, el vacunador y la subregión cargan a la persona si ya existe. La consulta de prueba usa `12345678` (Juan Pérez) y `87654321` (María Rodríguez).
-
-## Tecnologías y lenguajes
-
-| Capa | Tecnología |
-|---|---|
-| Marcado | HTML5 |
-| Estilos | CSS3, partido en `assets/css/` (`variables`, `layout`, `components`, `tables`, `style`) |
-| Cliente | JavaScript en un solo archivo, `app.js`. Sin frameworks. |
-| Servidor | PHP sobre Apache (XAMPP), con PDO |
-| Base de datos | MariaDB, base `programacion_3` |
-| Entorno | XAMPP Control Panel en Windows. Apache y MySQL en local. |
-
-No usa Node, React ni un hosting. El navegador habla con `api/*.php` y PHP habla con MariaDB. Las pantallas siguen validando y pintando las tablas; PHP solo lee y guarda.
+XAMPP solo enciende MySQL. La aplicación no es PHP y no se abre con Apache. Node la sirve en el puerto 3000.
 
 ## Cómo levantarlo
 
-1. Instalar XAMPP y abrir el panel.
-2. Start en **Apache** y en **MySQL**.
-3. Copiar esta carpeta a `C:\xampp\htdocs\sivan`.
-4. En phpMyAdmin (`http://localhost/phpmyadmin`) importar `database/programacion_3.sql`.
-5. Importar después `database/ajustes.sql`. Ese archivo se ejecuta una sola vez: completa cédulas, cuentas y claves foráneas.
-6. Abrir `http://localhost/sivan/login.html`.
+1. Abre XAMPP y pulsa **Start** en **MySQL**.
+2. Entra a `http://localhost/phpmyadmin`.
+3. Ve a **Importar** y elige `database/xampp.sql`.
 
-La conexión local es `127.0.0.1`, usuario `root`, sin contraseña, base `programacion_3`.
+Ese archivo crea la base `programacion_3`, las tablas, el catálogo de Venezuela y los usuarios de prueba. Si lo importas otra vez, borra esas tablas y las vuelve a crear: lo que hayas guardado desde la aplicación se pierde.
+
+4. En la carpeta del proyecto, en la terminal:
+
+```
+npm install
+npm start
+```
+
+`npm install` hace falta la primera vez, o cuando cambie `package.json`. Después basta con `npm start`.
+
+5. Abre `http://localhost:3000/login`.
+
+La conexión está en `conexion.js`: host `localhost`, usuario `root`, sin contraseña, base `programacion_3`. Si en tu XAMPP el usuario `root` tiene contraseña, cámbiala ahí.
+
+Para detener el servidor, en la terminal donde corre `npm start` pulsa `Ctrl + C`.
+
+## Cómo viaja un clic
+
+1. El botón del formulario envía los datos a una dirección, por ejemplo `POST /expediente/guardar`.
+2. `app.js` entrega esa dirección al archivo de `routes/` que le corresponde.
+3. La ruta revisa que los campos no vengan vacíos y llama a un archivo de `models/`.
+4. El modelo arma el `INSERT` o el `SELECT` y lo manda por `conexion.js`. Los valores van con `?`, no pegados dentro del texto SQL.
+5. La ruta redirige a la misma pantalla (`res.redirect`) o la vuelve a dibujar (`res.render`).
+
+Ejemplo: **Guardar** en el expediente llega a `routes/expediente.js`, que llama a `models/personas.js`, y al terminar abre otra vez `/expediente` con la cédula que se acaba de guardar.
 
 ## Estructura del proyecto
 
 ```
-sivan/
-├── login.html            Acceso institucional
-├── index.html            Expediente del vacunador
-├── subregion.html        Emisión de carnet
-├── master.html           Usuarios, catálogo y auditoría
-├── consulta.html         Consulta por cédula
-├── app.js                Validaciones y pintado de tablas
-├── api/
-│   ├── conexion.php      PDO hacia MariaDB
-│   ├── bootstrap.php     Sesión, JSON y auditoría
-│   ├── territorio.php    Estados, municipios y parroquias de los select
-│   ├── persona_repo.php  Altas y consultas de personas y dosis
-│   ├── login.php
-│   ├── personas.php
-│   ├── expediente.php
-│   ├── carnet.php
-│   ├── usuarios.php
-│   ├── vacunas.php
-│   ├── consulta.php
-│   └── auditoria.php
-├── assets/
-│   ├── css/
-│   └── image/SIVAN-LOGO.png
-└── database/
-    ├── programacion_3.sql
-    └── ajustes.sql
+Programacion-3/
+├── app.js                  Arma Express, la sesión y las direcciones
+├── bin/www                 Arranca el servidor en el puerto 3000
+├── conexion.js             Pool de MySQL hacia programacion_3
+├── package.json            Dependencias y el comando npm start
+├── routes/                 Qué hacer en cada URL
+├── models/                 Consultas a la base
+├── views/                  Textos y formularios de las pantallas
+├── assets/                 CSS y el logo
+└── database/xampp.sql      Script para crear todo en phpMyAdmin
 ```
 
-Los select de ubicación siguen con las tres opciones de la interfaz. Esas opciones apuntan a filas reales del catálogo:
+### routes
+
+Cada archivo escucha una parte de la dirección.
+
+| Archivo | Dirección | Qué hace |
+|---|---|---|
+| `routes/index.js` | `/` | Si no hay sesión, manda a `/login`. Si la hay, manda a la pantalla del rol |
+| `routes/login.js` | `/login` y `/login/envio` | Muestra el formulario y compara correo y contraseña |
+| `routes/expediente.js` | `/expediente` | Busca, guarda la ficha y agrega o borra dosis |
+| `routes/subregion.js` | `/subregion` | Busca y genera o elimina carnets |
+| `routes/master.js` | `/master` | Usuarios, vacunas y el conteo de dosis |
+| `routes/consulta.js` | `/consulta` | Consulta pública |
+| `routes/sesion.js` | — | No es una página. Impide entrar a una pantalla de otro rol |
+
+Cerrar sesión está en `/logout`, definido en `app.js`.
+
+### models
+
+| Archivo | Tabla que toca |
+|---|---|
+| `models/login.js` | `usuarios`, solo para entrar |
+| `models/personas.js` | `personas`, y arma la ficha con sus dosis y su último carnet |
+| `models/dosis.js` | `dosis` |
+| `models/carnet.js` | `carnet_salud` |
+| `models/usuarios.js` | `usuarios` |
+| `models/vacunas.js` | `vacunas` |
+| `models/auditoria.js` | `auditoria_logs` y el conteo que ve el Master |
+| `models/territorio.js` | Traduce las opciones del formulario (Roscio, San Juan, Distrito 1) a los id de la base |
+| `models/consultar.js` | Función que usan los demás para ejecutar `conexion.query` |
+
+### views
+
+Aquí se cambia el texto que se lee en la página.
+
+| Si quieres cambiar… | Archivo |
+|---|---|
+| Login, cuentas de prueba y el enlace a la consulta | `views/login.ejs` |
+| Ficha del vacunador, vacunas y botones | `views/expediente.ejs` |
+| Carnet de la subregión | `views/subregion.ejs` |
+| Panel master | `views/master.ejs` |
+| Consulta del ciudadano | `views/consulta.ejs` |
+| Barra de arriba y “Cerrar Sesión” | `views/header.ejs` |
+| Página de error | `views/error.ejs` |
+
+El título que va al lado de **SIVAN** en la barra no está en el header. Lo escribe la ruta al abrir la página: `routes/expediente.js`, `routes/subregion.js`, `routes/master.js` y `routes/consulta.js`.
+
+Los avisos cortos (“Expediente guardado”, “Complete la cédula”, “Usuario o contraseña incorrectos”) también están en el `routes` de esa pantalla.
+
+Con `npm start` ya corriendo, guardas el archivo y recargas el navegador. Un cambio de texto no obliga a reiniciar el servidor.
+
+Los estilos están en `assets/css/`: `variables.css` (colores), `layout.css` (barra y página), `components.css` (formularios y botones), `tables.css` (tablas) y `style.css`, que los junta. El logo es `assets/image/SIVAN-LOGO.png`. Express publica esa carpeta en `/assets`.
+
+## Dónde se guardan las opciones del formulario
+
+Los select de estado, municipio, parroquia y subregión tienen pocas opciones. Cada una apunta a una fila real del catálogo:
 
 | Opción en pantalla | Fila en la base |
 |---|---|
-| Guárico / Roscio / San Juan | Estado 11, municipio 134, parroquia 432 |
+| Guárico / Roscio / San Juan | Estado 11, municipio Juan Germán Roscio (134), parroquia San Juan de los Morros (432) |
 | Parapara | Parroquia 433 |
 | Cantagallo | Parroquia Cantaclaro (431), en el mismo municipio |
-| Infante | Municipio 137, parroquia Valle de la Pascua (439), subregión 2 |
-| Miranda | Municipio Sebastián Francisco de Miranda (143) |
-| Distrito 1 y Distrito 2 | Subregiones `DS-01` y `DS-02` |
+| Infante | Municipio Leonardo Infante (137), parroquia Valle de la Pascua (439), subregión 2 |
+| Miranda | Municipio Sebastián Francisco de Miranda (143), parroquia El Calvario (453) |
+| Distrito 1 | Subregión `DS-01`, Roscio |
+| Distrito 2 | Subregión `DS-02`, Infante |
 
-Distrito 3 no tiene fila en `subregiones`. Si se elige, la persona se guarda sin subregión.
+Distrito 3 no tiene fila. Si se elige, la persona se guarda sin subregión.
 
-## Estructura de la base de datos
+El centro de ejemplo es **Aurora**, en San Juan de los Morros. Los usuarios nuevos quedan asociados a ese centro.
 
-Base: `programacion_3`. Motor InnoDB, charset `utf8mb4`.
+## Base de datos
+
+Nombre: `programacion_3`. Motor InnoDB, caracteres `utf8mb4`. Todo sale de `database/xampp.sql`.
 
 ### Personas y acceso
 
-**personas.** El ciudadano. Nombres, cédula única (`VARCHAR`), edad, correo, fecha de nacimiento, tipo de sangre, y las llaves hacia parroquia, subregión y centro.
+**personas.** El ciudadano: nombres, cédula única, edad, correo, fecha de nacimiento, tipo de sangre, parroquia, subregión y centro. La cédula es texto (`VARCHAR`) para no perder ceros a la izquierda.
 
-**usuarios.** Personal de salud. Nombre, apellido, cédula, centro, cargo, correo único, contraseña con `password_hash` y rol: `Master`, `Subregion` o `Vacunador`.
+**usuarios.** El personal: nombre, apellido, cédula, centro, cargo, correo, contraseña y rol (`Master`, `Subregion` o `Vacunador`). El login busca una fila con ese correo y esa contraseña. El correo no se puede repetir.
 
 ### Territorio
 
-**estados** → **municipios** → **parroquias**. Catálogo de Venezuela (25 estados). Cada municipio pertenece a un estado y cada parroquia a un municipio.
+**estados**, **municipios** y **parroquias** traen el catálogo de Venezuela: 25 estados y sus municipios y parroquias. Un municipio pertenece a un estado y una parroquia a un municipio.
 
-**subregiones.** Distrito sanitario. Apunta a un estado y a un municipio. Datos de ejemplo: Distrito Sanitario N° 1 Roscio y N° 2 Infante, ambos en Guárico.
+**subregiones.** El distrito sanitario. Tiene estado y municipio. De ejemplo están el Distrito Sanitario N° 1 (Roscio) y el N° 2 (Infante), los dos en Guárico.
 
-**centros.** Centro de vacunación. Apunta a una parroquia y a una subregión. Dato de ejemplo: Aurora, en San Juan de los Morros.
+**centros.** El lugar donde se vacuna. Tiene parroquia y subregión. El ejemplo es Aurora.
 
 ### Vacunación
 
-**vacunas.** Catálogo del biológico y su esquema. Dato de ejemplo: Toxoide Tetánico.
+**vacunas.** El catálogo del biológico y su esquema. De ejemplo está Toxoide Tetánico.
 
-**dosis.** Cada aplicación o pendiente de una persona. Número de dosis, vacuna, persona, fecha, lote, estado (`Aplicado` o `Pendiente`) y observación.
+**dosis.** Una aplicación, o una que todavía falta, de una persona. Guarda el número de dosis, la vacuna, la persona, la fecha, el lote, el estado (`Aplicado` o `Pendiente`) y una observación.
 
 ### Carnet de salud
 
-**examenes.** Catálogo: hemograma, orina, radiografía de tórax, coprocultivo. Nombre, tipo, indicaciones y precio.
+**examenes.** Hemograma, orina, radiografía de tórax y coprocultivo. Cada uno tiene tipo, indicaciones y precio.
 
-**carnet_salud.** Un carnet de una persona. Código, condición sanitaria, fecha de emisión, fecha de vencimiento y estatus (`Pendiente`, `Emitido`, `Revocado`). Cada clic en generar carnet crea un registro.
+**carnet_salud.** Un carnet de una persona: código, condición sanitaria, fecha de emisión, fecha de vencimiento y estatus (`Pendiente`, `Emitido` o `Revocado`). Generar carnet inserta una fila nueva.
 
-**carnet_examenes.** Tabla intermedia. Une un carnet con varios exámenes, guarda el resultado y la fecha.
+**carnet_examenes.** Une un carnet con varios exámenes. Guarda el resultado y la fecha del examen.
 
 ### Auditoría
 
-**auditoria_logs.** Quién hizo qué: usuario de la sesión, acción, tabla afectada, id del registro, detalle y fecha. La escribe el PHP en cada alta y cada baja. La tabla del Master no lista ese log: muestra el conteo de dosis por estado y municipio.
+**auditoria_logs.** Anota quién hizo la acción, qué tabla tocó, el id del registro, un detalle y la fecha. Se escribe al guardar o borrar. La tabla del Master no lista ese historial: muestra cuántas dosis hay agrupadas por estado y municipio.
 
 ### Relaciones
 
@@ -142,4 +217,4 @@ carnet_salud 1───* carnet_examenes *───1 examenes
 usuarios 1───* auditoria_logs
 ```
 
-`programacion_3.sql` ya declara las claves de auditoría, carnet-exámenes, municipios, parroquias y subregiones. `ajustes.sql` agrega las de dosis, personas, centros, carnet y usuarios.
+Esas flechas están declaradas como claves foráneas. Una dosis no puede quedar apuntando a una persona o a una vacuna que no existe. Si se borra una persona, se borran sus dosis. Si se intenta borrar una vacuna que ya tiene dosis, la base no deja.
