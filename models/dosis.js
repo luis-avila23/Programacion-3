@@ -6,12 +6,12 @@ function idVacuna(nombre) {
         return Promise.reject(new Error("Seleccione la vacuna."));
     }
 
-    return consultar("SELECT id FROM vacunas WHERE Nombre = ? LIMIT 1", [limpio])
+    return consultar("SELECT id FROM Vacunas WHERE Nombre = ? LIMIT 1", [limpio])
         .then((filas) => {
             if (filas.length) {
                 return filas[0].id;
             }
-            return consultar("INSERT INTO vacunas (Nombre, Esquema) VALUES (?, ?)", [limpio, "Dosis Única"])
+            return consultar("INSERT INTO Vacunas (Nombre, Esquema, Centros_id) VALUES (?, ?, ?)", [limpio, "Dosis Única", 1])
                 .then((resultado) => resultado.insertId);
         });
 }
@@ -26,7 +26,7 @@ module.exports = {
 
         return idVacuna(item.nombre).then((vacunaId) => {
             return consultar(
-                `INSERT INTO dosis (Numero, Vacunas_id, Personas_id, Fecha_aplicacion, Lote, Estado, Observacion)
+                `INSERT INTO Dosis (Numero, Vacunas_id, Personas_id, Fecha_aplicacion, Lote, Estado, Observacion)
                  VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [numero, vacunaId, personaId, fecha, lote, estado, observacion]
             ).then((resultado) => resultado.insertId);
@@ -34,6 +34,6 @@ module.exports = {
     },
 
     eliminar(id) {
-        return consultar("DELETE FROM dosis WHERE id = ?", [id]);
+        return consultar("DELETE FROM Dosis WHERE id = ?", [id]);
     }
 };

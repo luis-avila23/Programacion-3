@@ -54,14 +54,14 @@ router.post("/guardar", function (req, res, next) {
 
     personasModel.guardar(req.body)
         .then((personaId) => carnetModel.insertar(personaId, req.body.condition, req.body.expiry))
-        .then((carnetId) => auditoriaModel.registrar(req.session.usuarioId, "insertar", "carnet_salud", carnetId, "Cédula " + cedula))
+        .then((carnetId) => auditoriaModel.registrar(req.session.usuarioId, "insertar", "Carnet", carnetId, "Cédula " + cedula))
         .then(() => redirigir(res, "", "Carnet registrado."))
         .catch(next);
 });
 
 router.get("/eliminar/:id", function (req, res, next) {
     carnetModel.eliminar(req.params.id)
-        .then(() => auditoriaModel.registrar(req.session.usuarioId, "eliminar", "carnet_salud", req.params.id, "Baja de carnet"))
+        .then(() => auditoriaModel.registrar(req.session.usuarioId, "eliminar", "Carnet", req.params.id, "Baja de carnet"))
         .then(() => redirigir(res, "", "Carnet eliminado."))
         .catch(next);
 });

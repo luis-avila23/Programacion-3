@@ -34,7 +34,7 @@ function armarFicha(fila, dosis, carnet) {
         lastname2: fila.Segundo_apellido || "",
         municipality: territorio.valorPorId(territorio.municipios, fila.id_municipio) || fila.municipio_nombre || "",
         state: fila.estado_nombre || "",
-        parish: territorio.valorPorId(territorio.parroquias, fila.id_parroquia),
+        parish: territorio.valorPorId(territorio.parroquias, fila.Parroquias_id),
         subregion: territorio.valorPorId(territorio.subregiones, fila.Subregiones_id),
         bloodType: fila.Tipo_sangre || "",
         email: fila.Correo || "",
@@ -57,12 +57,12 @@ module.exports = {
 
         return consultar(
             `SELECT p.id, p.Primer_nombre, p.Segundo_nombre, p.Primer_apellido, p.Segundo_apellido,
-                    p.Cedula, p.Edad, p.Correo, p.Tipo_sangre, p.id_parroquia, p.Subregiones_id,
-                    pa.id_municipio, m.municipio AS municipio_nombre, e.estado AS estado_nombre
-             FROM personas p
-             LEFT JOIN parroquias pa ON pa.id_parroquia = p.id_parroquia
-             LEFT JOIN municipios m ON m.id_municipio = pa.id_municipio
-             LEFT JOIN estados e ON e.id_estado = m.id_estado
+                    p.Cedula, p.Edad, p.Correo, p.Tipo_sangre, p.Parroquias_id, p.Subregiones_id,
+                    m.id AS id_municipio, m.municipio AS municipio_nombre, e.estado AS estado_nombre
+             FROM Personas p
+             LEFT JOIN Parroquias pa ON pa.id = p.Parroquias_id
+             LEFT JOIN Municipios m ON m.id = pa.id_Municipios
+             LEFT JOIN Estados e ON e.id = m.Estados_id
              WHERE p.Cedula = ?
              LIMIT 1`,
             [limpia]
@@ -75,15 +75,15 @@ module.exports = {
             return consultar(
                 `SELECT d.id, d.Numero AS numero, d.Fecha_aplicacion AS fecha, d.Lote AS lote,
                         d.Estado AS estado, d.Observacion AS observacion, v.Nombre AS nombre
-                 FROM dosis d
-                 LEFT JOIN vacunas v ON v.id = d.Vacunas_id
+                 FROM Dosis d
+                 LEFT JOIN Vacunas v ON v.id = d.Vacunas_id
                  WHERE d.Personas_id = ?
                  ORDER BY d.id`,
                 [fila.id]
             ).then((dosis) => {
                 return consultar(
                     `SELECT Condicion_sanitaria, Fecha_vencimiento
-                     FROM carnet_salud
+                     FROM Carnet
                      WHERE Personas_id = ?
                      ORDER BY id DESC
                      LIMIT 1`,
@@ -109,32 +109,33 @@ module.exports = {
             datos.email || null,
             datos.bloodType || null,
             lugar.parroquiaId,
-            lugar.subregionId
+            lugar.subregionId,
+            1
         ];
 
-        return consultar("SELECT id FROM personas WHERE Cedula = ? LIMIT 1", [cedula])
+        return consultar("SELECT id FROM Personas WHERE Cedula = ? LIMIT 1", [cedula])
             .then((filas) => {
                 if (filas.length) {
                     return consultar(
-                        `UPDATE personas
+                        `UPDATE Personas
                          SET Primer_nombre = ?, Segundo_nombre = ?, Primer_apellido = ?, Segundo_apellido = ?,
-                             Edad = ?, Correo = ?, Tipo_sangre = ?, id_parroquia = ?, Subregiones_id = ?
+                             Edad = ?, Correo = ?, Tipo_sangre = ?, Parroquias_id = ?, Subregiones_id = ?, Centros_id = ?
                          WHERE id = ?`,
                         valores.concat(filas[0].id)
                     ).then(() => filas[0].id);
                 }
 
                 return consultar(
-                    `INSERT INTO personas
-                     (Primer_nombre, Segundo_nombre, Primer_apellido, Segundo_apellido, Edad, Correo, Tipo_sangre, id_parroquia, Subregiones_id, Cedula)
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    `INSERT INTO Personas
+                     (Primer_nombre, Segundo_nombre, Primer_apellido, Segundo_apellido, Edad, Correo, Tipo_sangre, Parroquias_id, Subregiones_id, Centros_id, Cedula)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                     valores.concat(cedula)
                 ).then((resultado) => resultado.insertId);
             });
     },
 
     idPorCedula(cedula) {
-        return consultar("SELECT id FROM personas WHERE Cedula = ? LIMIT 1", [limpiarCedula(cedula)])
+        return consultar("SELECT id FROM Personas WHERE Cedula = ? LIMIT 1", [limpiarCedula(cedula)])
             .then((filas) => (filas.length ? filas[0].id : null));
     }
 };

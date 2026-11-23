@@ -38,7 +38,7 @@ router.post("/usuarios", function (req, res, next) {
     }
 
     usuariosModel.insertar(nombre, correo, rol)
-        .then((id) => auditoriaModel.registrar(req.session.usuarioId, "insertar", "usuarios", id, correo))
+        .then((id) => auditoriaModel.registrar(req.session.usuarioId, "insertar", "Usuarios", id, correo))
         .then(() => res.redirect("/master?mensaje=" + encodeURIComponent("Usuario registrado. Entra con la contraseña sivan123.")))
         .catch((err) => {
             if (err.message === "Ese correo ya está registrado.") {
@@ -50,7 +50,7 @@ router.post("/usuarios", function (req, res, next) {
 
 router.get("/usuarios/eliminar/:id", function (req, res, next) {
     usuariosModel.eliminar(req.params.id)
-        .then(() => auditoriaModel.registrar(req.session.usuarioId, "eliminar", "usuarios", req.params.id, "Baja de usuario"))
+        .then(() => auditoriaModel.registrar(req.session.usuarioId, "eliminar", "Usuarios", req.params.id, "Baja de usuario"))
         .then(() => res.redirect("/master?mensaje=" + encodeURIComponent("Usuario eliminado.")))
         .catch(next);
 });
@@ -63,14 +63,14 @@ router.post("/vacunas", function (req, res, next) {
     }
 
     vacunasModel.insertar(nombre, esquema)
-        .then((id) => auditoriaModel.registrar(req.session.usuarioId, "insertar", "vacunas", id, nombre))
+        .then((id) => auditoriaModel.registrar(req.session.usuarioId, "insertar", "Vacunas", id, nombre))
         .then(() => res.redirect("/master?mensaje=" + encodeURIComponent("Biológico agregado.")))
         .catch(next);
 });
 
 router.get("/vacunas/eliminar/:id", function (req, res, next) {
     vacunasModel.eliminar(req.params.id)
-        .then(() => auditoriaModel.registrar(req.session.usuarioId, "eliminar", "vacunas", req.params.id, "Baja de biológico"))
+        .then(() => auditoriaModel.registrar(req.session.usuarioId, "eliminar", "Vacunas", req.params.id, "Baja de biológico"))
         .then(() => res.redirect("/master"))
         .catch((err) => {
             if (err && err.code === "ER_ROW_IS_REFERENCED_2") {

@@ -1,12 +1,23 @@
 const consultar = require("./consultar");
 
 module.exports = {
-    registrar(usuarioId, accion, tabla, registroId, detalle) {
-        return consultar(
-            `INSERT INTO auditoria_logs (Usuarios_id, Accion, Tabla_afectada, Registro_id, Detalle)
-             VALUES (?, ?, ?, ?, ?)`,
-            [usuarioId || null, accion, tabla, registroId || null, detalle || null]
-        );
+    registrar(usuarioId, accion, tabla, registroAfectado, detalle) {
+        const partes = [];
+        if (detalle) {
+            partes.push(detalle);
+        }
+        if (registroAfectado) {
+            partes.push("id " + registroAfectado);
+        }
+
+        return consultar("INSERT INTO Registro (Usuarios_id) VALUES (?)", [usuarioId || null])
+            .then((resultado) => {
+                return consultar(
+                    `INSERT INTO Auditoria (Accion, Tabla_afectada, Registro_id, Detalle, Fecha, Hora)
+                     VALUES (?, ?, ?, ?, CURDATE(), NOW())`,
+                    [accion, tabla, resultado.insertId, partes.join(" | ") || null]
+                );
+            });
     },
 
     resumen() {
@@ -14,11 +25,11 @@ module.exports = {
             `SELECT COALESCE(e.estado, 'Sin jurisdicción') AS estado,
                     COALESCE(m.municipio, '—') AS municipio,
                     COUNT(d.id) AS total
-             FROM dosis d
-             JOIN personas p ON p.id = d.Personas_id
-             LEFT JOIN parroquias pa ON pa.id_parroquia = p.id_parroquia
-             LEFT JOIN municipios m ON m.id_municipio = pa.id_municipio
-             LEFT JOIN estados e ON e.id_estado = m.id_estado
+             FROM Dosis d
+             JOIN Personas p ON p.id = d.Personas_id
+             LEFT JOIN Parroquias pa ON pa.id = p.Parroquias_id
+             LEFT JOIN Municipios m ON m.id = pa.id_Municipios
+             LEFT JOIN Estados e ON e.id = m.Estados_id
              GROUP BY COALESCE(e.estado, 'Sin jurisdicción'), COALESCE(m.municipio, '—')
              ORDER BY total DESC`
         );

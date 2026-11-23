@@ -54,7 +54,7 @@ router.post("/guardar", function (req, res, next) {
     }
 
     personasModel.guardar(req.body)
-        .then((id) => auditoriaModel.registrar(req.session.usuarioId, "guardar", "personas", id, "Cédula " + cedula))
+        .then((id) => auditoriaModel.registrar(req.session.usuarioId, "guardar", "Personas", id, "Cédula " + cedula))
         .then(() => redirigir(res, cedula, "Expediente guardado."))
         .catch(next);
 });
@@ -80,7 +80,7 @@ router.post("/dosis", function (req, res, next) {
 
     personasModel.guardar(req.body)
         .then((personaId) => dosisModel.insertar(personaId, item))
-        .then((dosisId) => auditoriaModel.registrar(req.session.usuarioId, "insertar", "dosis", dosisId, item.nombre))
+        .then((dosisId) => auditoriaModel.registrar(req.session.usuarioId, "insertar", "Dosis", dosisId, item.nombre))
         .then(() => redirigir(res, cedula, "Dosis registrada."))
         .catch(next);
 });
@@ -88,7 +88,7 @@ router.post("/dosis", function (req, res, next) {
 router.get("/dosis/eliminar/:id", function (req, res, next) {
     const cedula = personasModel.limpiarCedula(req.query.cedula);
     dosisModel.eliminar(req.params.id)
-        .then(() => auditoriaModel.registrar(req.session.usuarioId, "eliminar", "dosis", req.params.id, "Baja de dosis"))
+        .then(() => auditoriaModel.registrar(req.session.usuarioId, "eliminar", "Dosis", req.params.id, "Baja de dosis"))
         .then(() => redirigir(res, cedula, "Dosis eliminada."))
         .catch(next);
 });

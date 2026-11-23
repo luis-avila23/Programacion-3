@@ -125,10 +125,10 @@ Habla con MariaDB. Cada archivo arma los `SELECT`, `INSERT` y `DELETE` de una pa
 | `models/login.js` | `usuarios`, solo para entrar |
 | `models/personas.js` | `personas`, y arma la ficha con sus dosis y su último carnet |
 | `models/dosis.js` | `dosis` |
-| `models/carnet.js` | `carnet_salud` |
+| `models/carnet.js` | `Carnet` |
 | `models/usuarios.js` | `usuarios` |
 | `models/vacunas.js` | `vacunas` |
-| `models/auditoria.js` | `auditoria_logs` y el conteo que ve el Master |
+| `models/auditoria.js` | `Registro`, `Auditoria` y el conteo que ve el Master |
 | `models/territorio.js` | No inserta filas. Traduce las opciones del formulario (Roscio, San Juan, Distrito 1) a los id de la base |
 | `models/consultar.js` | Función que usan los demás para ejecutar `conexion.query` |
 
@@ -181,21 +181,21 @@ Nombre: `programacion_3`. Motor InnoDB, caracteres `utf8mb4`. Todo sale de `data
 
 ### Personas y acceso
 
-**personas.** El ciudadano: nombres, cédula única, edad, correo, fecha de nacimiento, tipo de sangre, parroquia, subregión y centro. La cédula es texto (`VARCHAR`) para no perder ceros a la izquierda.
+**Personas.** El ciudadano: nombres, cédula única, edad, correo, fecha de nacimiento, tipo de sangre, parroquia (`Parroquias_id`), subregión y centro. La cédula es texto (`VARCHAR`) para no perder ceros a la izquierda.
 
-**usuarios.** El personal: nombre, apellido, cédula, centro, cargo, correo, contraseña y rol (`Master`, `Subregion` o `Vacunador`). El login busca una fila con ese correo y esa contraseña. El correo no se puede repetir.
+**Usuarios.** El personal: nombre, apellido, cédula, centro, cargo, correo, contraseña y rol (`Master`, `Subregion` o `Vacunador`). El login busca una fila con ese correo y esa contraseña. El correo no se puede repetir. Correo, contraseña y rol no salen dibujados en el diagrama; hacen falta para entrar al sistema.
 
 ### Territorio
 
-**estados**, **municipios** y **parroquias** traen el catálogo de Venezuela: 25 estados y sus municipios y parroquias. Un municipio pertenece a un estado y una parroquia a un municipio.
+**Estados**, **Municipios** y **Parroquias** traen el catálogo de Venezuela: 25 estados y sus municipios y parroquias. La clave de cada una es `id`. Un municipio pertenece a un estado (`Estados_id`) y una parroquia a un municipio (`id_Municipios`).
 
-**subregiones.** El distrito sanitario. Tiene estado y municipio. De ejemplo están el Distrito Sanitario N° 1 (Roscio) y el N° 2 (Infante), los dos en Guárico.
+**Subregiones.** El distrito sanitario. Tiene estado (`Estados_id`) y municipio (`Municipios_id`). De ejemplo están el Distrito Sanitario N° 1 (Roscio) y el N° 2 (Infante), los dos en Guárico.
 
-**centros.** El lugar donde se vacuna. Tiene parroquia y subregión. El ejemplo es Aurora.
+**Centros.** El lugar donde se vacuna. Tiene parroquia (`id_Parroquias`) y subregión (`id_Subregiones`). El ejemplo es Aurora.
 
 ### Vacunación
 
-**vacunas.** El catálogo del biológico y su esquema. De ejemplo está Toxoide Tetánico.
+**Vacunas.** El catálogo del biológico, el centro donde se aplica (`Centros_id`) y su esquema. De ejemplo está Toxoide Tetánico, en el centro Aurora.
 
 **dosis.** Una aplicación, o una que todavía falta, de una persona. Guarda el número de dosis, la vacuna, la persona, la fecha, el lote, el estado (`Aplicado` o `Pendiente`) y una observación.
 
@@ -203,29 +203,33 @@ Nombre: `programacion_3`. Motor InnoDB, caracteres `utf8mb4`. Todo sale de `data
 
 **examenes.** Hemograma, orina, radiografía de tórax y coprocultivo. Cada uno tiene tipo, indicaciones y precio.
 
-**carnet_salud.** Un carnet de una persona: código, condición sanitaria, fecha de emisión, fecha de vencimiento y estatus (`Pendiente`, `Emitido` o `Revocado`). Generar carnet inserta una fila nueva.
+**Carnet.** Un carnet de una persona: código, dosis, examen, condición sanitaria, fecha de emisión, fecha de vencimiento y estatus (`Pendiente`, `Emitido` o `Revocado`). Generar carnet inserta una fila nueva. La condición sanitaria es la que elige la subregión; el diagrama no la nombra, pero la pantalla sí.
 
-**carnet_examenes.** Une un carnet con varios exámenes. Guarda el resultado y la fecha del examen.
+**Carnet_examenes.** Une un carnet con varios exámenes. Guarda el resultado y la fecha del examen.
 
 ### Auditoría
 
-**auditoria_logs.** Anota quién hizo la acción, qué tabla tocó, el id del registro, un detalle y la fecha. Se escribe al guardar o borrar. La tabla del Master no lista ese historial: muestra cuántas dosis hay agrupadas por estado y municipio.
+**Registro.** Una solicitud que modifica datos. Solo guarda el usuario que la hizo (`Usuarios_id`). Cada guardado, alta o baja crea una fila.
+
+**Auditoria.** El detalle de esa solicitud: acción, tabla, el `Registro_id`, un detalle con el id afectado, la fecha y la hora. No apunta al usuario directo: llega a él por `Registro`. La tabla del Master no lista ese historial: muestra cuántas dosis hay agrupadas por estado y municipio.
 
 ### Relaciones
 
 ```
-estados 1───* municipios 1───* parroquias
-estados 1───* subregiones *───1 municipios
-parroquias 1───* centros *───1 subregiones
+Estados 1───* Municipios 1───* Parroquias
+Estados 1───* Subregiones *───1 Municipios
+Parroquias 1───* Centros *───1 Subregiones
 
-parroquias 1───* personas *───1 subregiones
-centros    1───* personas
-centros    1───* usuarios
+Parroquias 1───* Personas *───1 Subregiones
+Centros    1───* Personas
+Centros    1───* Usuarios
+Centros    1───* Vacunas
+Examenes   1───* Personas
 
-personas 1───* dosis *───1 vacunas
-personas 1───* carnet_salud
-carnet_salud 1───* carnet_examenes *───1 examenes
-usuarios 1───* auditoria_logs
+Personas 1───* Dosis *───1 Vacunas
+Personas 1───* Carnet *───1 Dosis
+Carnet   1───* Carnet_examenes *───1 Examenes
+Usuarios 1───* Registro 1───* Auditoria
 ```
 
 Esas flechas están declaradas como claves foráneas. Una dosis no puede quedar apuntando a una persona o a una vacuna que no existe. Si se borra una persona, se borran sus dosis. Si se intenta borrar una vacuna que ya tiene dosis, la base no deja.
